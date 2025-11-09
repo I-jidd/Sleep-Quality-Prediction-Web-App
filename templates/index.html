@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DreamWell - Sleep Quality Predictor</title>
+
+    <!-- 1. Load Tailwind CSS (External) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 2. Link our new custom CSS file -->
+    <!-- This 'url_for' syntax is how Flask finds files in the 'static' folder -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body
+    class="bg-gradient-to-br from-slate-900 to-slate-800 text-slate-200 min-h-screen flex items-center justify-center p-4"
+  >
+    <div
+      class="bg-slate-800/60 p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-lg border border-slate-700"
+    >
+      <!-- Header -->
+      <div class="flex items-center space-x-3 mb-6">
+        <!-- Moon Icon -->
+        <svg
+          class="w-8 h-8 text-indigo-400"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 008.325-3.646c.32-.717.73-1.405 1.175-2.094a9.718 9.718 0 01-1.423-.058z"
+          />
+        </svg>
+        <h1 class="text-2xl font-bold text-white">Sleep Quality Predictor</h1>
+      </div>
+
+      <!-- Form Wizard -->
+      <form id="sleepForm">
+        <div id="formContainer" class="space-y-6">
+          <!-- Step 1: You -->
+          <div id="step-1" class="step active space-y-4">
+            <p class="text-sm text-slate-400">Step 1 of 3: About You</p>
+            <div>
+              <label
+                for="sex"
+                class="block text-sm font-medium text-slate-300 mb-1"
+                >Sex</label
+              >
+              <select
+                id="sex"
+                name="sex"
+                required
+                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              >
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+              </select>
+            </div>
+            <div>
+              <label
+                for="academic_level"
+                class="block text-sm font-medium text-slate-300 mb-1"
+                >Academic Level</label
+              >
+              <select
+                id="academic_level"
+                name="academic_level"
+                required
+                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              >
+                <option value="First Year">First Year</option>
+                <option value="Second Year">Second Year</option>
+                <option value="Third Year">Third Year</option>
+                <option value="Fourth Year">Fourth Year</option>
+              </select>
+            </div>
+            <div>
+              <label
+                for="living_arrangement"
+                class="block text-sm font-medium text-slate-300 mb-1"
+                >Living Arrangement</label
+              >
+              <select
+                id="living_arrangement"
+                name="living_arrangement"
+                required
+                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              >
+                <option
+                  value="In-campus dormitory (walking distance, no commute needed)"
+                >
+                  In-campus dormitory
+                </option>
+                <option
+                  value="Off-campus dormitory/boarding house (short commute required)"
+                >
+                  Off-campus dormitory
+                </option>
+                <option
+                  value="Off-campus home/apartment (longer commute required)"
+                >
+                  Off-campus home/apartment
+                </option>
+                <option
+                  value="Commute from family home (daily travel from permanent residence)"
+                >
+                  Commute from family home
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Step 2: Habits -->
+          <div id="step-2" class="step space-y-4">
+            <p class="text-sm text-slate-400">Step 2 of 3: Daily Habits</p>
+            <div>
+              <label
+                for="Caffeine_Intake_Frequency"
+                class="block text-sm font-medium text-slate-300 mb-1"
+                >Caffeine Intake</label
+              >
+              <select
+                id="Caffeine_Intake_Frequency"
+                name="Caffeine_Intake_Frequency"
+                required
+                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              >
+                <option value="Never">Never</option>
+                <option value="Almost Never">Almost Never</option>
+                <option value="Sometimes">Sometimes</option>
+                <option value="Fairly Often">Fairly Often</option>
+                <option value="Very Often">Very Often</option>
+              </select>
+            </div>
+            <div>
+              <label
+                for="screen_time_before_sleep"
+                class="block text-sm font-medium text-slate-300 mb-1"
+                >Screen Time Before Sleep</label
+              >
+              <select
+                id="screen_time_before_sleep"
+                name="screen_time_before_sleep"
+                required
+                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              >
+                <option value="Never">Never</option>
+                <option value="less than 30 minutes">
+                  less than 30 minutes
+                </option>
+                <option value="30 minutes - 1 hour">30 minutes - 1 hour</option>
+                <option value="1 - 2 hours">1 - 2 hours</option>
+                <option value="More than 2 hours">More than 2 hours</option>
+              </select>
+            </div>
+            <div>
+              <label
+                for="smoking_Frequency"
+                class="block text-sm font-medium text-slate-300 mb-1"
+                >Smoking Frequency</label
+              >
+              <select
+                id="smoking_Frequency"
+                name="smoking_Frequency"
+                required
+                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              >
+                <option value="Never">Never</option>
+                <option value="Almost never">Almost never</option>
+                <option value="Sometimes">Sometimes</option>
+                <option value="Fairly Often">Fairly Often</option>
+                <option value="Very Often">Very Often</option>
+              </select>
+            </div>
+            <div>
+              <label
+                for="physical_activity_frequency"
+                class="block text-sm font-medium text-slate-300 mb-1"
+                >Physical Activity</label
+              >
+              <select
+                id="physical_activity_frequency"
+                name="physical_activity_frequency"
+                required
+                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              >
+                <option value="Never">Never</option>
+                <option value="Almost never">Almost never</option>
+                <option value="Sometimes">Sometimes</option>
+                <option value="Fairly Often">Fairly Often</option>
+                <option value="Very Often">Very Often</option>
+              </select>
+            </div>
+            <div>
+              <label
+                for="alcohol_consumption_frequency"
+                class="block text-sm font-medium text-slate-300 mb-1"
+                >Alcohol Consumption</label
+              >
+              <select
+                id="alcohol_consumption_frequency"
+                name="alcohol_consumption_frequency"
+                required
+                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              >
+                <option value="Never">Never</option>
+                <option value="Almost never">Almost never</option>
+                <option value="Sometimes">Sometimes</option>
+                <option value="Fairly Often">Fairly Often</option>
+                <option value="Very Often">Very Often</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Step 3: Sleep & Stress -->
+          <div id="step-3" class="step space-y-4">
+            <p class="text-sm text-slate-400">Step 3 of 3: Sleep & Stress</p>
+            <div>
+              <label
+                for="stress_level"
+                class="block text-sm font-medium text-slate-300 mb-1"
+                >Stress Level</label
+              >
+              <select
+                id="stress_level"
+                name="stress_level"
+                required
+                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              >
+                <option value="low stress">Low Stress</option>
+                <option value="moderate stress">Moderate Stress</option>
+                <option value="high stress">High Stress</option>
+              </select>
+            </div>
+            <div>
+              <label
+                for="daytime_nap_duration"
+                class="block text-sm font-medium text-slate-300 mb-1"
+                >Daytime Nap Duration</label
+              >
+              <input
+                type="text"
+                id="daytime_nap_duration"
+                name="daytime_nap_duration"
+                required
+                placeholder="e.g., '30 mins' or '2 hours'"
+                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none placeholder:text-slate-500"
+              />
+            </div>
+            <div>
+              <label
+                for="latenight_study_hours"
+                class="block text-sm font-medium text-slate-300 mb-1"
+                >Late-Night Study Hours</label
+              >
+              <input
+                type="text"
+                id="latenight_study_hours"
+                name="latenight_study_hours"
+                required
+                placeholder="e.g., '10pm - 1am' or 'None'"
+                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none placeholder:text-slate-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="mt-8 flex justify-between">
+          <button
+            type="button"
+            id="prevBtn"
+            class="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-5 rounded-lg transition duration-200"
+          >
+            Previous
+          </button>
+          <button
+            type="button"
+            id="nextBtn"
+            class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-5 rounded-lg transition duration-200"
+          >
+            Next
+          </button>
+          <button
+            type="submit"
+            id="predictBtn"
+            class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-5 rounded-lg transition duration-200 hidden"
+          >
+            <!-- This text changes to a spinner -->
+            <span id="predictText">Predict</span>
+            <!-- Spinner SVG -->
+            <svg
+              id="loadingSpinner"
+              class="animate-spin h-5 w-5 text-white hidden"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </form>
+
+      <!-- Result Card (Hidden by default) -->
+      <div id="resultCard" class="hidden mt-8">
+        <div
+          class="bg-slate-700 p-6 rounded-2xl border border-slate-600 text-center"
+        >
+          <!-- Poor Sleep Icon (Moon) -->
+          <svg
+            id="iconPoor"
+            class="w-20 h-20 text-indigo-400 mx-auto hidden"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 008.325-3.646c.32-.717.73-1.405 1.175-2.094a9.718 9.718 0 01-1.423-.058z"
+            />
+          </svg>
+          <!-- Good Sleep Icon (Sun) -->
+          <svg
+            id="iconGood"
+            class="w-20 h-20 text-yellow-400 mx-auto hidden"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-6.364-.386l1.591-1.591M3 12H.75m.386-6.364l1.591 1.591M12 12a2.25 2.25 0 00-2.25 2.25v.01c0 .052.002.105.004.156a2.25 2.25 0 004.492 0c.002-.05.004-.104.004-.156v.01A2.25 2.25 0 0012 12zM12 12h.01"
+            />
+          </svg>
+
+          <!-- "This is fine" Meme Image -->
+          <img
+            id="memeImage"
+            src="https://i.imgur.com/c4jt321.png"
+            alt="This is fine"
+            class="w-full rounded-lg mt-4 hidden"
+          />
+
+          <h2 id="resultText" class="text-2xl font-bold text-white mt-4"></h2>
+          <p id="confidenceText" class="text-lg text-slate-300"></p>
+
+          <button
+            type="button"
+            id="resetBtn"
+            class="mt-6 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-5 rounded-lg transition duration-200"
+          >
+            Start Over
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Link our new JavaScript file -->
+    <!-- This 'url_for' syntax is how Flask finds files in the 'static' folder -->
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+  </body>
+</html>
