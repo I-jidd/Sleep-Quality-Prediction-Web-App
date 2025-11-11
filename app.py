@@ -37,7 +37,7 @@ def predict():
         
         # --- 5. Preprocess the New Data ---
         # Call our "specialist" function to do all the hard work
-        df_final = preprocess_input(data, model_columns, model_columns_final)
+        df_final = preprocess_input(data)
         
         # --- 6. Make Prediction ---
         prediction = model.predict(df_final)

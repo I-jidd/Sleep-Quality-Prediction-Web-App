@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetBtn = document.getElementById("resetBtn");
   const memeImage = document.getElementById("memeImage");
 
-  // Show the correct step and update buttons
   function showStep(stepNumber) {
     steps.forEach((step, index) => {
       step.classList.toggle("active", index + 1 === stepNumber);
@@ -34,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
     predictBtn.classList.toggle("hidden", stepNumber !== totalSteps);
   }
 
-  // Next button click
   nextBtn.addEventListener("click", () => {
     if (currentStep < totalSteps) {
       currentStep++;
@@ -42,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Previous button click
   prevBtn.addEventListener("click", () => {
     if (currentStep > 1) {
       currentStep--;
@@ -59,9 +56,44 @@ document.addEventListener("DOMContentLoaded", () => {
     loadingSpinner.classList.remove("hidden");
     predictBtn.disabled = true;
 
-    // 1. Collect form data
-    // The keys MUST match the *original* CSV columns
+    // Collect form data FIRST
     const formData = new FormData(form);
+
+    // Format the time range for late-night study
+    const startTime = formData.get("latenight_study_start");
+    const endTime = formData.get("latenight_study_end");
+    let latenightStudyFormatted = "";
+
+    if (startTime && endTime) {
+      // Convert "22:00" to "10pm" and "01:00" to "1am"
+      const formatTime = (time24) => {
+        const [hours, minutes] = time24.split(":");
+        let h = parseInt(hours);
+
+        // For late-night times after midnight (00:00 - 11:59), it's AM
+        // For evening times (12:00 - 23:59), it's PM
+        if (h >= 12) {
+          // 12:00-23:59 range
+          if (h > 12) h = h - 12; // 13-23 becomes 1-11
+          // h === 12 stays as 12
+          return minutes === "00" ? `${h}pm` : `${h}:${minutes}pm`;
+        } else {
+          // 00:00-11:59 range
+          if (h === 0) h = 12; // Midnight becomes 12am
+          return minutes === "00" ? `${h}am` : `${h}:${minutes}am`;
+        }
+      };
+
+      latenightStudyFormatted = `${formatTime(startTime)}-${formatTime(
+        endTime
+      )}`;
+    }
+
+    // Format nap duration
+    const napDuration = formData.get("daytime_nap_duration");
+    const napFormatted = napDuration ? `${napDuration} minutes` : "0";
+
+    // Build the data object
     const data = {
       sex: formData.get("sex"),
       academic_level: formData.get("academic_level"),
@@ -74,12 +106,13 @@ document.addEventListener("DOMContentLoaded", () => {
         "alcohol_consumption_frequency"
       ),
       stress_level: formData.get("stress_level"),
-      daytime_nap_duration: formData.get("daytime_nap_duration"),
-      latenight_study_hours: formData.get("latenight_study_hours"),
+      daytime_nap_duration: napFormatted,
+      latenight_study_hours: latenightStudyFormatted,
     };
 
-    // 2. Send to Flask server
-    // We use '/predict' as the endpoint
+    console.log("Sending data:", data); // Debug log
+
+    // Send to Flask server
     fetch("/predict", {
       method: "POST",
       headers: {
@@ -94,19 +127,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return response.json();
       })
       .then((result) => {
-        // 3. Display results
+        // Display results
         resultText.innerText = result.prediction_text;
         confidenceText.innerText = `Confidence: ${(
           result.confidence * 100
         ).toFixed(0)}%`;
 
-        // Show the correct icon or meme
-        // We hide the original 'iconPoor' and show the meme instead
         iconPoor.classList.add("hidden");
         iconGood.classList.toggle("hidden", result.prediction === 0);
-        memeImage.classList.toggle("hidden", result.prediction === 1); // Show meme if prediction is 0 (Poor)
+        memeImage.classList.toggle("hidden", result.prediction === 1);
 
-        // Animate in the result card
         formContainer.classList.add("hidden");
         prevBtn.classList.add("hidden");
         predictBtn.classList.add("hidden");
@@ -114,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
         resultCard.classList.add("fade-in");
       })
       .catch((error) => {
+        // Handle errors
         console.error("Error:", error);
         resultText.innerText = "Prediction Failed";
         confidenceText.innerText = "Please try again later.";
@@ -135,13 +166,13 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 
-  // Reset button click
+  // Reset button
   resetBtn.addEventListener("click", () => {
     resultCard.classList.add("hidden");
     resultCard.classList.remove("fade-in");
-    memeImage.classList.add("hidden"); // <-- Add this line
+    memeImage.classList.add("hidden");
     formContainer.classList.remove("hidden");
-    form.reset(); // Clear all form fields
+    form.reset();
     currentStep = 1;
     showStep(1);
   });

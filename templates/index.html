@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DreamWell - Sleep Quality Predictor</title>
 
-    <!-- 1. Load Tailwind CSS (External) -->
+    <!-- 1. Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- 2. Link our new custom CSS file -->
-    <!-- This 'url_for' syntax is how Flask finds files in the 'static' folder -->
+    <!-- 2. Link our custom CSS file -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
@@ -23,7 +22,6 @@
     >
       <!-- Header -->
       <div class="flex items-center space-x-3 mb-6">
-        <!-- Moon Icon -->
         <svg
           class="w-8 h-8 text-indigo-400"
           xmlns="http://www.w3.org/2000/svg"
@@ -44,7 +42,7 @@
       <!-- Form Wizard -->
       <form id="sleepForm">
         <div id="formContainer" class="space-y-6">
-          <!-- Step 1: You -->
+          <!-- Step 1: You (Unchanged) -->
           <div id="step-1" class="step active space-y-4">
             <p class="text-sm text-slate-400">Step 1 of 3: About You</p>
             <div>
@@ -117,7 +115,7 @@
             </div>
           </div>
 
-          <!-- Step 2: Habits -->
+          <!-- Step 2: Habits (Unchanged) -->
           <div id="step-2" class="step space-y-4">
             <p class="text-sm text-slate-400">Step 2 of 3: Daily Habits</p>
             <div>
@@ -139,6 +137,7 @@
                 <option value="Very Often">Very Often</option>
               </select>
             </div>
+            <!-- (Other selects for screen time, smoking, etc. are unchanged) -->
             <div>
               <label
                 for="screen_time_before_sleep"
@@ -219,7 +218,7 @@
             </div>
           </div>
 
-          <!-- Step 3: Sleep & Stress -->
+          <!-- Step 3: Sleep & Stress (UPDATED) -->
           <div id="step-3" class="step space-y-4">
             <p class="text-sm text-slate-400">Step 3 of 3: Sleep & Stress</p>
             <div>
@@ -234,45 +233,84 @@
                 required
                 class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
               >
-                <option value="low stress">Low Stress</option>
-                <option value="moderate stress">Moderate Stress</option>
-                <option value="high stress">High Stress</option>
+                <option value="Low stress">Low Stress</option>
+                <option value="Moderate stress">Moderate Stress</option>
+                <option value="High stress">High Stress</option>
               </select>
             </div>
+
+            <!-- === UPDATED: Nap Duration === -->
             <div>
               <label
                 for="daytime_nap_duration"
                 class="block text-sm font-medium text-slate-300 mb-1"
-                >Daytime Nap Duration</label
+                >Daytime Nap Duration (in minutes)</label
               >
               <input
-                type="text"
+                type="number"
                 id="daytime_nap_duration"
                 name="daytime_nap_duration"
                 required
-                placeholder="e.g., '30 mins' or '2 hours'"
+                value="0"
+                min="0"
+                max="120"
                 class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none placeholder:text-slate-500"
               />
+              <p class="text-xs text-slate-400 mt-1">
+                Enter 0 for "Never". Recommended max is 120 mins.
+              </p>
             </div>
+
+            <!-- === UPDATED: Late-Night Study Hours === -->
             <div>
-              <label
-                for="latenight_study_hours"
-                class="block text-sm font-medium text-slate-300 mb-1"
+              <label class="block text-sm font-medium text-slate-300 mb-1"
                 >Late-Night Study Hours</label
               >
-              <input
-                type="text"
-                id="latenight_study_hours"
-                name="latenight_study_hours"
-                required
-                placeholder="e.g., '10pm - 1am' or 'None'"
-                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none placeholder:text-slate-500"
-              />
+              <div class="flex items-center space-x-2">
+                <!-- "Start Time" input -->
+                <div class="flex-1">
+                  <label
+                    for="latenight_study_start"
+                    class="text-xs text-slate-400"
+                    >Start Time</label
+                  >
+                  <input
+                    type="time"
+                    id="latenight_study_start"
+                    name="latenight_study_start"
+                    required
+                    value="00:00"
+                    class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                  />
+                </div>
+
+                <span class="text-slate-400 pt-5">to</span>
+
+                <!-- "End Time" input -->
+                <div class="flex-1">
+                  <label
+                    for="latenight_study_end"
+                    class="text-xs text-slate-400"
+                    >End Time</label
+                  >
+                  <input
+                    type="time"
+                    id="latenight_study_end"
+                    name="latenight_study_end"
+                    required
+                    value="00:00"
+                    class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">
+                Set both to "12:00 AM" if you don't study late.
+              </p>
             </div>
           </div>
         </div>
 
-        <!-- Navigation Buttons -->
+        <!-- (Navigation Buttons are unchanged) -->
         <div class="mt-8 flex justify-between">
           <button
             type="button"
@@ -293,9 +331,7 @@
             id="predictBtn"
             class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-5 rounded-lg transition duration-200 hidden"
           >
-            <!-- This text changes to a spinner -->
             <span id="predictText">Predict</span>
-            <!-- Spinner SVG -->
             <svg
               id="loadingSpinner"
               class="animate-spin h-5 w-5 text-white hidden"
@@ -321,12 +357,11 @@
         </div>
       </form>
 
-      <!-- Result Card (Hidden by default) -->
+      <!-- (Result Card is unchanged) -->
       <div id="resultCard" class="hidden mt-8">
         <div
           class="bg-slate-700 p-6 rounded-2xl border border-slate-600 text-center"
         >
-          <!-- Poor Sleep Icon (Moon) -->
           <svg
             id="iconPoor"
             class="w-20 h-20 text-indigo-400 mx-auto hidden"
@@ -342,7 +377,6 @@
               d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 008.325-3.646c.32-.717.73-1.405 1.175-2.094a9.718 9.718 0 01-1.423-.058z"
             />
           </svg>
-          <!-- Good Sleep Icon (Sun) -->
           <svg
             id="iconGood"
             class="w-20 h-20 text-yellow-400 mx-auto hidden"
@@ -358,18 +392,14 @@
               d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-6.364-.386l1.591-1.591M3 12H.75m.386-6.364l1.591 1.591M12 12a2.25 2.25 0 00-2.25 2.25v.01c0 .052.002.105.004.156a2.25 2.25 0 004.492 0c.002-.05.004-.104.004-.156v.01A2.25 2.25 0 0012 12zM12 12h.01"
             />
           </svg>
-
-          <!-- "This is fine" Meme Image -->
           <img
             id="memeImage"
-            src="https://i.imgur.com/c4jt321.png"
+            src="{{ url_for('static', filename='meme.png')}}"
             alt="This is fine"
             class="w-full rounded-lg mt-4 hidden"
           />
-
           <h2 id="resultText" class="text-2xl font-bold text-white mt-4"></h2>
           <p id="confidenceText" class="text-lg text-slate-300"></p>
-
           <button
             type="button"
             id="resetBtn"
@@ -382,7 +412,6 @@
     </div>
 
     <!-- 3. Link our new JavaScript file -->
-    <!-- This 'url_for' syntax is how Flask finds files in the 'static' folder -->
     <script src="{{ url_for('static', filename='app.js') }}" defer></script>
   </body>
 </html>
