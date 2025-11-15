@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import pickle
 from flask import Flask, request, jsonify, render_template
-from preprocessing import preprocess_input  # <-- IMPORT our new function
+from preprocessing import preprocess_input  
 
 # --- 1. Initialize Flask App ---
 app = Flask(__name__)
@@ -26,7 +26,6 @@ except Exception as e:
 # --- 3. Define the Home Page Route ---
 @app.route('/', methods=['GET'])
 def home():
-    # This serves your index.html from the 'templates' folder
     return render_template('index.html')
 
 # --- 4. Define the Prediction Endpoint ---
@@ -36,7 +35,6 @@ def predict():
         data = request.get_json(force=True)
         
         # --- 5. Preprocess the New Data ---
-        # Call our "specialist" function to do all the hard work
         df_final = preprocess_input(data)
         
         # --- 6. Make Prediction ---
@@ -57,9 +55,3 @@ def predict():
     except Exception as e:
         print(f"Error during prediction: {e}")
         return jsonify({"error": "Failed to process request."}), 500
-
-# --- 8. Run the App ---
-if __name__ == '__main__':
-    # Using port 5000 as a default for local development
-    # Render.com will use its own port
-    app.run(host='0.0.0.0', port=5000)
