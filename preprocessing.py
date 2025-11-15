@@ -28,13 +28,12 @@ ORDINAL_MAPPING = {
     'stress_level': {'Low stress': 0, 'Moderate stress':1, 'High stress':2}
 }
 
-# --- 3. TRAINING DATA MEDIANS (IMPORTANT: Replace with your actual values!) ---
-# # You need to calculate these from your training data and hardcode them here
-MEDIAN_NAP_DURATION = 30.0  # Default fallback - REPLACE with actual median
-MEDIAN_LATENIGHT_HOURS = 3.0  # Default fallback - REPLACE with actual median
+# this was based on training data median values
+MEDIAN_NAP_DURATION = 120 
+MEDIAN_LATENIGHT_HOURS = 12
 
 
-# --- 4. MASTER PREPROCESSING FUNCTION ---
+# --- 4. PREPROCESSING FUNCTION ---
 def preprocess_input(data):
     """
     Takes raw JSON-like data from the web form and runs
@@ -62,7 +61,7 @@ def preprocess_input(data):
 
     # D) Apply Cap (Domain Knowledge)
     df.loc[df['daytime_nap_duration'] > 120, 'daytime_nap_duration'] = np.nan
-
+    
     # # E) Apply Imputers with hardcoded medians from training data
     df['daytime_nap_duration'] = df['daytime_nap_duration'].fillna(MEDIAN_NAP_DURATION)
     df['latenight_study_hours'] = df['latenight_study_hours'].fillna(MEDIAN_LATENIGHT_HOURS)
@@ -72,13 +71,6 @@ def preprocess_input(data):
     
     # G) CRITICAL: Align Columns to the Final Template
     df_final = df.reindex(columns=model_columns_final, fill_value=0)
-    
-    # Debug: Print the final dataframe to verify
-    print(df[df.isnull().any(axis=1)])
-    print("Final preprocessed data:")
-    print(df_final.head())
-    print(f"Shape: {df_final.shape}")
-    print(f"Contains NaN: {df_final.isnull().any().any()}")
     
     return df_final
 
