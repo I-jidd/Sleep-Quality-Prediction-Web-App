@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 # --- 2. Load Model and Preprocessing Objects ---
 try:
-    with open('models/model.pkl', 'rb') as f:
+    with open('models/best_model.pkl', 'rb') as f:
         model = pickle.load(f)
     with open('models/model_columns.pkl', 'rb') as f:
         model_columns = pickle.load(f)
