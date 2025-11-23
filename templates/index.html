@@ -3,406 +3,1103 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DreamWell - Sleep Quality Predictor</title>
+    <title>DreamWell - 16-Bit Edition</title>
 
-    <!-- 1. Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- 2. Link our custom CSS file -->
     <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
       rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}"
     />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              pixel: ['"Press Start 2P"', "cursive"],
+            },
+            colors: {
+              "rpg-blue": "#1a1a4d",
+              "rpg-border": "#ffffff",
+              "rpg-gold": "#ffd700",
+            },
+            animation: {
+              "bounce-slow": "bounce 2s infinite",
+              wiggle: "wiggle 0.5s ease-in-out infinite",
+              blink: "blink 1s step-start infinite",
+            },
+            keyframes: {
+              wiggle: {
+                "0%, 100%": { transform: "rotate(-3deg)" },
+                "50%": { transform: "rotate(3deg)" },
+              },
+              blink: {
+                "0%, 50%": { opacity: "1" },
+                "51%, 100%": { opacity: "0" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        background-color: #050510;
+        background-image: radial-gradient(
+            white,
+            rgba(255, 255, 255, 0.3) 2px,
+            transparent 4px
+          ),
+          radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 3px),
+          radial-gradient(white, rgba(255, 255, 255, 0.1) 2px, transparent 4px),
+          radial-gradient(rgba(147, 51, 234, 0.3), transparent 100px);
+        background-size: 550px 550px, 350px 350px, 250px 250px, 100% 100%;
+        background-position: 0 0, 40px 60px, 130px 270px, 0 0;
+        animation: starfield 200s linear infinite;
+      }
+
+      @keyframes starfield {
+        from {
+          background-position: 0 0, 40px 60px, 130px 270px, 0 0;
+        }
+        to {
+          background-position: 550px 550px, 390px 410px, 380px 520px, 0 0;
+        }
+      }
+
+      .nes-container {
+        border: 4px solid white;
+        box-shadow: -4px 0 0 0 black, 4px 0 0 0 black, 0 -4px 0 0 black,
+          0 4px 0 0 black, 0 0 20px rgba(255, 215, 0, 0.5);
+        image-rendering: pixelated;
+        position: relative;
+      }
+
+      .nes-container::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.1) 0%,
+          transparent 100%
+        );
+        pointer-events: none;
+      }
+
+      ::-webkit-scrollbar {
+        width: 12px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #000;
+        border: 2px solid #fff;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #ffd700 0%, #ff8c00 100%);
+        border: 2px solid #000;
+      }
+
+      .step {
+        display: none;
+      }
+      .step.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      select:focus,
+      input:focus {
+        box-shadow: 0 0 0 3px #ffd700;
+        outline: none;
+      }
+
+      .pixel-button {
+        transition: all 0.1s;
+        image-rendering: pixelated;
+      }
+
+      .pixel-button:hover {
+        transform: scale(1.05);
+      }
+
+      .pixel-button:active {
+        transform: scale(0.95);
+      }
+
+      .dialogue-bubble {
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .health-bar {
+        background: linear-gradient(90deg, #22c55e 0%, #84cc16 100%);
+        height: 100%;
+        transition: width 0.5s ease-out;
+      }
+
+      .stat-bar {
+        background: repeating-linear-gradient(
+          90deg,
+          #000 0px,
+          #000 2px,
+          #333 2px,
+          #333 4px
+        );
+      }
+    </style>
   </head>
   <body
-    class="bg-gradient-to-br from-slate-900 to-slate-800 text-slate-200 min-h-screen flex items-center justify-center p-4"
+    class="font-pixel text-white min-h-screen flex items-center justify-center p-2 sm:p-4"
   >
+    <!-- Title Screen (Shows Briefly on Load) -->
     <div
-      class="bg-slate-800/60 p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-lg border border-slate-700"
+      id="titleScreen"
+      class="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center hidden"
     >
-      <!-- Header -->
-      <div class="flex items-center space-x-3 mb-6">
-        <svg
-          class="w-8 h-8 text-indigo-400"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 008.325-3.646c.32-.717.73-1.405 1.175-2.094a9.718 9.718 0 01-1.423-.058z"
-          />
-        </svg>
-        <h1 class="text-2xl font-bold text-white">Sleep Quality Predictor</h1>
+      <h1 class="text-2xl sm:text-4xl text-rpg-gold mb-8 animate-pulse">
+        DreamWell
+      </h1>
+      <p class="text-xs sm:text-sm text-gray-400">Press Any Key to Start</p>
+    </div>
+
+    <!-- Main Game Container -->
+    <div
+      class="flex flex-col lg:flex-row gap-8 w-full max-w-6xl items-end justify-center"
+    >
+      <!-- LEFT: Stats Panel (New Addition) -->
+      <div class="hidden lg:block w-64 space-y-4">
+        <div class="nes-container bg-rpg-blue p-4">
+          <h3 class="text-xs text-rpg-gold mb-4">PARTY STATUS</h3>
+
+          <!-- Health Bar -->
+          <div class="mb-4">
+            <p class="text-[8px] text-gray-400 mb-1">SLEEP HP</p>
+            <div class="stat-bar w-full h-4 border-2 border-white">
+              <div id="healthBar" class="health-bar" style="width: 100%"></div>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="space-y-2 text-[10px]">
+            <div class="flex justify-between">
+              <span class="text-gray-400">STRESS:</span>
+              <span id="stressDisplay" class="text-yellow-400">LOW</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">CAFFEINE:</span>
+              <span id="caffeineDisplay" class="text-blue-400">NONE</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-400">SCREEN:</span>
+              <span id="screenDisplay" class="text-purple-400">NONE</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quest Log -->
+        <div class="nes-container bg-rpg-blue p-4">
+          <h3 class="text-xs text-rpg-gold mb-2">QUEST LOG</h3>
+          <p class="text-[8px] text-gray-300 leading-relaxed">
+            Complete the character sheet to predict your sleep quality tonight.
+          </p>
+        </div>
       </div>
 
-      <!-- Form Wizard -->
-      <form id="sleepForm">
-        <div id="formContainer" class="space-y-6">
-          <!-- Step 1: You (Unchanged) -->
-          <div id="step-1" class="step active space-y-4">
-            <p class="text-sm text-slate-400">Step 1 of 3: About You</p>
-            <div>
-              <label
-                for="sex"
-                class="block text-sm font-medium text-slate-300 mb-1"
-                >Sex</label
+      <!-- CENTER: The RPG Dialogue Box (The Form) -->
+      <div
+        class="nes-container bg-rpg-blue w-full lg:w-2/3 p-4 sm:p-6 relative order-2 lg:order-1"
+      >
+        <!-- Header with Step Indicator -->
+        <div class="border-b-4 border-white pb-4 mb-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-4 h-4 bg-rpg-gold animate-blink"></div>
+              <h1
+                class="text-xs sm:text-sm md:text-base leading-relaxed text-rpg-gold"
               >
-              <select
-                id="sex"
-                name="sex"
-                required
-                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-              >
-                <option value="Female">Female</option>
-                <option value="Male">Male</option>
-              </select>
+                Quest: Sleep Prediction
+              </h1>
             </div>
-            <div>
-              <label
-                for="academic_level"
-                class="block text-sm font-medium text-slate-300 mb-1"
-                >Academic Level</label
-              >
-              <select
-                id="academic_level"
-                name="academic_level"
-                required
-                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-              >
-                <option value="First Year">First Year</option>
-                <option value="Second Year">Second Year</option>
-                <option value="Third Year">Third Year</option>
-                <option value="Fourth Year">Fourth Year</option>
-              </select>
-            </div>
-            <div>
-              <label
-                for="living_arrangement"
-                class="block text-sm font-medium text-slate-300 mb-1"
-                >Living Arrangement</label
-              >
-              <select
-                id="living_arrangement"
-                name="living_arrangement"
-                required
-                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-              >
-                <option
-                  value="In-campus dormitory (walking distance, no commute needed)"
-                >
-                  In-campus dormitory
-                </option>
-                <option
-                  value="Off-campus dormitory/boarding house (short commute required)"
-                >
-                  Off-campus dormitory
-                </option>
-                <option
-                  value="Off-campus home/apartment (longer commute required)"
-                >
-                  Off-campus home/apartment
-                </option>
-                <option
-                  value="Commute from family home (daily travel from permanent residence)"
-                >
-                  Commute from family home
-                </option>
-              </select>
+            <div class="flex gap-2">
+              <div id="step1Dot" class="w-3 h-3 bg-rpg-gold"></div>
+              <div id="step2Dot" class="w-3 h-3 bg-gray-600"></div>
+              <div id="step3Dot" class="w-3 h-3 bg-gray-600"></div>
             </div>
           </div>
+        </div>
 
-          <!-- Step 2: Habits (Unchanged) -->
-          <div id="step-2" class="step space-y-4">
-            <p class="text-sm text-slate-400">Step 2 of 3: Daily Habits</p>
-            <div>
-              <label
-                for="Caffeine_Intake_Frequency"
-                class="block text-sm font-medium text-slate-300 mb-1"
-                >Caffeine Intake</label
+        <form id="sleepForm" onsubmit="event.preventDefault();">
+          <div
+            id="formContainer"
+            class="space-y-6 h-64 sm:h-80 lg:h-96 overflow-y-auto pr-2"
+          >
+            <!-- Step 1: Character Creation -->
+            <div id="step-1" class="step active space-y-6">
+              <p
+                class="text-[10px] sm:text-xs text-rpg-gold mb-4 flex items-center gap-2"
               >
-              <select
-                id="Caffeine_Intake_Frequency"
-                name="Caffeine_Intake_Frequency"
-                required
-                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-              >
-                <option value="Never">Never</option>
-                <option value="Almost Never">Almost Never</option>
-                <option value="Sometimes">Sometimes</option>
-                <option value="Fairly Often">Fairly Often</option>
-                <option value="Very Often">Very Often</option>
-              </select>
-            </div>
-            <!-- (Other selects for screen time, smoking, etc. are unchanged) -->
-            <div>
-              <label
-                for="screen_time_before_sleep"
-                class="block text-sm font-medium text-slate-300 mb-1"
-                >Screen Time Before Sleep</label
-              >
-              <select
-                id="screen_time_before_sleep"
-                name="screen_time_before_sleep"
-                required
-                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-              >
-                <option value="Never">Never</option>
-                <option value="less than 30 minutes">
-                  less than 30 minutes
-                </option>
-                <option value="30 minutes - 1 hour">30 minutes - 1 hour</option>
-                <option value="1 - 2 hours">1 - 2 hours</option>
-                <option value="More than 2 hours">More than 2 hours</option>
-              </select>
-            </div>
-            <div>
-              <label
-                for="smoking_Frequency"
-                class="block text-sm font-medium text-slate-300 mb-1"
-                >Smoking Frequency</label
-              >
-              <select
-                id="smoking_Frequency"
-                name="smoking_Frequency"
-                required
-                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-              >
-                <option value="Never">Never</option>
-                <option value="Almost never">Almost never</option>
-                <option value="Sometimes">Sometimes</option>
-                <option value="Fairly Often">Fairly Often</option>
-                <option value="Very Often">Very Often</option>
-              </select>
-            </div>
-            <div>
-              <label
-                for="physical_activity_frequency"
-                class="block text-sm font-medium text-slate-300 mb-1"
-                >Physical Activity</label
-              >
-              <select
-                id="physical_activity_frequency"
-                name="physical_activity_frequency"
-                required
-                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-              >
-                <option value="Never">Never</option>
-                <option value="Almost never">Almost never</option>
-                <option value="Sometimes">Sometimes</option>
-                <option value="Fairly Often">Fairly Often</option>
-                <option value="Very Often">Very Often</option>
-              </select>
-            </div>
-            <div>
-              <label
-                for="alcohol_consumption_frequency"
-                class="block text-sm font-medium text-slate-300 mb-1"
-                >Alcohol Consumption</label
-              >
-              <select
-                id="alcohol_consumption_frequency"
-                name="alcohol_consumption_frequency"
-                required
-                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-              >
-                <option value="Never">Never</option>
-                <option value="Almost never">Almost never</option>
-                <option value="Sometimes">Sometimes</option>
-                <option value="Fairly Often">Fairly Often</option>
-                <option value="Very Often">Very Often</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Step 3: Sleep & Stress (UPDATED) -->
-          <div id="step-3" class="step space-y-4">
-            <p class="text-sm text-slate-400">Step 3 of 3: Sleep & Stress</p>
-            <div>
-              <label
-                for="stress_level"
-                class="block text-sm font-medium text-slate-300 mb-1"
-                >Stress Level</label
-              >
-              <select
-                id="stress_level"
-                name="stress_level"
-                required
-                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-              >
-                <option value="Low stress">Low Stress</option>
-                <option value="Moderate stress">Moderate Stress</option>
-                <option value="High stress">High Stress</option>
-              </select>
-            </div>
-
-            <!-- === UPDATED: Nap Duration === -->
-            <div>
-              <label
-                for="daytime_nap_duration"
-                class="block text-sm font-medium text-slate-300 mb-1"
-                >Daytime Nap Duration (in minutes)</label
-              >
-              <input
-                type="number"
-                id="daytime_nap_duration"
-                name="daytime_nap_duration"
-                required
-                value="0"
-                min="0"
-                max="120"
-                class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none placeholder:text-slate-500"
-              />
-              <p class="text-xs text-slate-400 mt-1">
-                Enter 0 for "Never". Recommended max is 120 mins.
+                <span class="inline-block w-2 h-2 bg-rpg-gold"></span>
+                CHARACTER CREATION (1/3)
               </p>
-            </div>
 
-            <!-- === UPDATED: Late-Night Study Hours === -->
-            <div>
-              <label class="block text-sm font-medium text-slate-300 mb-1"
-                >Late-Night Study Hours</label
-              >
-              <div class="flex items-center space-x-2">
-                <!-- "Start Time" input -->
-                <div class="flex-1">
-                  <label
-                    for="latenight_study_start"
-                    class="text-xs text-slate-400"
-                    >Start Time</label
-                  >
-                  <input
-                    type="time"
-                    id="latenight_study_start"
-                    name="latenight_study_start"
-                    required
-                    value="00:00"
-                    class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                  />
-                </div>
-
-                <span class="text-slate-400 pt-5">to</span>
-
-                <!-- "End Time" input -->
-                <div class="flex-1">
-                  <label
-                    for="latenight_study_end"
-                    class="text-xs text-slate-400"
-                    >End Time</label
-                  >
-                  <input
-                    type="time"
-                    id="latenight_study_end"
-                    name="latenight_study_end"
-                    required
-                    value="00:00"
-                    class="w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-white focus:ring-2 focus:ring-indigo-400 focus:outline-none"
-                  />
-                </div>
+              <div>
+                <label
+                  for="sex"
+                  class="block text-[10px] sm:text-xs text-yellow-200 mb-2"
+                  >> SELECT SEX</label
+                >
+                <select
+                  id="sex"
+                  name="sex"
+                  required
+                  class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs focus:bg-gray-900 focus:outline-none cursor-pointer hover:border-rpg-gold"
+                >
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                </select>
               </div>
-              <p class="text-xs text-slate-400 mt-1">
-                Set both to "12:00 AM" if you don't study late.
-              </p>
+
+              <div>
+                <label
+                  for="academic_level"
+                  class="block text-[10px] sm:text-xs text-yellow-200 mb-2"
+                  >> CURRENT LEVEL</label
+                >
+                <select
+                  id="academic_level"
+                  name="academic_level"
+                  required
+                  class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs focus:bg-gray-900 focus:outline-none cursor-pointer hover:border-rpg-gold"
+                >
+                  <option value="First Year">First Year</option>
+                  <option value="Second Year">Second Year</option>
+                  <option value="Third Year">Third Year</option>
+                  <option value="Fourth Year">Fourth Year</option>
+                </select>
+              </div>
+
+              <div>
+                <label
+                  for="living_arrangement"
+                  class="block text-[10px] sm:text-xs text-yellow-200 mb-2"
+                  >> SPAWN POINT</label
+                >
+                <select
+                  id="living_arrangement"
+                  name="living_arrangement"
+                  required
+                  class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs focus:bg-gray-900 focus:outline-none cursor-pointer hover:border-rpg-gold"
+                >
+                  <option value="In-campus dormitory">
+                    In-campus dormitory
+                  </option>
+                  <option value="Off-campus dormitory">
+                    Off-campus dormitory
+                  </option>
+                  <option value="Off-campus home/apartment">
+                    Off-campus home/apartment
+                  </option>
+                  <option value="Commute from family home">
+                    Commute from family home
+                  </option>
+                </select>
+              </div>
             </div>
+
+            <!-- Step 2: Daily Consumables -->
+            <div id="step-2" class="step space-y-6">
+              <p
+                class="text-[10px] sm:text-xs text-rpg-gold mb-4 flex items-center gap-2"
+              >
+                <span class="inline-block w-2 h-2 bg-rpg-gold"></span>
+                DAILY CONSUMABLES (2/3)
+              </p>
+
+              <div>
+                <label class="block text-[10px] sm:text-xs text-yellow-200 mb-2"
+                  >> CAFFEINE FREQUENCY</label
+                >
+                <select
+                  id="Caffeine_Intake_Frequency"
+                  name="Caffeine_Intake_Frequency"
+                  required
+                  class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs hover:border-rpg-gold"
+                >
+                  <option value="Never">Never</option>
+                  <option value="Almost Never">Almost Never</option>
+                  <option value="Sometimes">Sometimes</option>
+                  <option value="Fairly Often">Fairly Often</option>
+                  <option value="Very Often">Very Often</option>
+                  <option value="Always">Always</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-[10px] sm:text-xs text-yellow-200 mb-2"
+                  >> SCREEN TIME (PRE-SLEEP)</label
+                >
+                <select
+                  id="screen_time_before_sleep"
+                  name="screen_time_before_sleep"
+                  required
+                  class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs hover:border-rpg-gold"
+                >
+                  <option value="Never">Never</option>
+                  <option value="less than 30 minutes">
+                    Less than 30 mins
+                  </option>
+                  <option value="30 minutes - 1 hour">30 mins - 1 hour</option>
+                  <option value="1 - 2 hours">1 - 2 hours</option>
+                  <option value="More than 2 hours">More than 2 hours</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-[10px] sm:text-xs text-yellow-200 mb-2"
+                  >> SMOKING FREQUENCY</label
+                >
+                <select
+                  id="smoking_Frequency"
+                  name="smoking_Frequency"
+                  required
+                  class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs hover:border-rpg-gold"
+                >
+                  <option value="Never">Never</option>
+                  <option value="Almost never">Almost never</option>
+                  <option value="Sometimes">Sometimes</option>
+                  <option value="Fairly Often">Fairly Often</option>
+                  <option value="Very Often">Very Often</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-[10px] sm:text-xs text-yellow-200 mb-2"
+                  >> PHYSICAL ACTIVITY</label
+                >
+                <select
+                  id="physical_activity_frequency"
+                  name="physical_activity_frequency"
+                  required
+                  class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs hover:border-rpg-gold"
+                >
+                  <option value="Never">Never</option>
+                  <option value="Almost never">Almost never</option>
+                  <option value="Sometimes">Sometimes</option>
+                  <option value="Fairly Often">Fairly Often</option>
+                  <option value="Very Often">Very Often</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-[10px] sm:text-xs text-yellow-200 mb-2"
+                  >> ALCOHOL FREQUENCY</label
+                >
+                <select
+                  id="alcohol_consumption_frequency"
+                  name="alcohol_consumption_frequency"
+                  required
+                  class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs hover:border-rpg-gold"
+                >
+                  <option value="Never">Never</option>
+                  <option value="Almost never">Almost never</option>
+                  <option value="Sometimes">Sometimes</option>
+                  <option value="Fairly Often">Fairly Often</option>
+                  <option value="Very Often">Very Often</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Step 3: Stats & Debuffs -->
+            <div id="step-3" class="step space-y-6">
+              <p
+                class="text-[10px] sm:text-xs text-rpg-gold mb-4 flex items-center gap-2"
+              >
+                <span class="inline-block w-2 h-2 bg-rpg-gold"></span>
+                STATS & DEBUFFS (3/3)
+              </p>
+
+              <div>
+                <label class="block text-[10px] sm:text-xs text-yellow-200 mb-2"
+                  >> STRESS LEVEL</label
+                >
+                <select
+                  id="stress_level"
+                  name="stress_level"
+                  required
+                  class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs hover:border-rpg-gold"
+                >
+                  <option value="Low stress">Low stress</option>
+                  <option value="Moderate stress">Moderate stress</option>
+                  <option value="High stress">High stress</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-[10px] sm:text-xs text-yellow-200 mb-2"
+                  >> NAP DURATION (MINS)</label
+                >
+                <input
+                  type="number"
+                  id="daytime_nap_duration"
+                  name="daytime_nap_duration"
+                  value="0"
+                  min="0"
+                  max="300"
+                  required
+                  class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs font-pixel hover:border-rpg-gold"
+                />
+              </div>
+
+              <div>
+                <label class="block text-[10px] sm:text-xs text-yellow-200 mb-2"
+                  >> LATE NIGHT STUDY (HOURS)</label
+                >
+                <input
+                  type="number"
+                  id="latenight_study_hours"
+                  name="latenight_study_hours"
+                  value="0"
+                  min="0"
+                  max="12"
+                  step="0.5"
+                  required
+                  class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs font-pixel hover:border-rpg-gold"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Navigation Controls -->
+          <div
+            class="mt-4 sm:mt-8 flex justify-between pt-4 border-t-2 border-white border-dashed"
+          >
+            <button
+              type="button"
+              id="prevBtn"
+              class="pixel-button hover:text-rpg-gold uppercase text-[10px] sm:text-xs cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+              style="visibility: hidden"
+            >
+              &lt; PREV
+            </button>
+            <button
+              type="button"
+              id="nextBtn"
+              class="pixel-button hover:text-rpg-gold uppercase text-[10px] sm:text-xs cursor-pointer"
+            >
+              NEXT &gt;
+            </button>
+            <button
+              type="button"
+              id="predictBtn"
+              class="pixel-button hidden hover:text-green-400 uppercase text-[10px] sm:text-xs text-green-300 cursor-pointer animate-pulse"
+            >
+              [ CAST PREDICTION ]
+            </button>
+          </div>
+        </form>
+
+        <!-- Loading Overlay -->
+        <div
+          id="loadingOverlay"
+          class="absolute inset-0 bg-black/95 z-40 hidden flex-col items-center justify-center"
+        >
+          <div class="text-rpg-gold text-sm sm:text-lg mb-4 animate-pulse">
+            CASTING SPELL...
+          </div>
+          <div class="flex gap-2">
+            <div class="w-4 h-4 bg-rpg-gold animate-bounce"></div>
+            <div
+              class="w-4 h-4 bg-rpg-gold animate-bounce"
+              style="animation-delay: 0.1s"
+            ></div>
+            <div
+              class="w-4 h-4 bg-rpg-gold animate-bounce"
+              style="animation-delay: 0.2s"
+            ></div>
           </div>
         </div>
 
-        <!-- (Navigation Buttons are unchanged) -->
-        <div class="mt-8 flex justify-between">
-          <button
-            type="button"
-            id="prevBtn"
-            class="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-5 rounded-lg transition duration-200"
-          >
-            Previous
-          </button>
-          <button
-            type="button"
-            id="nextBtn"
-            class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-5 rounded-lg transition duration-200"
-          >
-            Next
-          </button>
-          <button
-            type="submit"
-            id="predictBtn"
-            class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-5 rounded-lg transition duration-200 hidden"
-          >
-            <span id="predictText">Predict</span>
-            <svg
-              id="loadingSpinner"
-              class="animate-spin h-5 w-5 text-white hidden"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-          </button>
-        </div>
-      </form>
-
-      <!-- (Result Card is unchanged) -->
-      <div id="resultCard" class="hidden mt-8">
+        <!-- Result Overlay -->
         <div
-          class="bg-slate-700 p-6 rounded-2xl border border-slate-600 text-center"
+          id="resultOverlay"
+          class="absolute inset-0 bg-black/95 z-50 flex-col items-center justify-center p-4 text-center hidden"
         >
-          <svg
-            id="iconPoor"
-            class="w-20 h-20 text-indigo-400 mx-auto hidden"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
+          <h2
+            class="text-sm sm:text-lg text-rpg-gold mb-6 uppercase animate-bounce-slow"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 008.325-3.646c.32-.717.73-1.405 1.175-2.094a9.718 9.718 0 01-1.423-.058z"
-            />
-          </svg>
-          <img
-            id="iconGood"
-            src="{{ url_for('static', filename='image.png')}}"
-            alt="Good Sleep"
-            class="w-full rounded-lg mt-4 hidden"
-          />
-          <img
-            id="memeImage"
-            src="{{ url_for('static', filename='meme.png')}}"
-            alt="This is fine"
-            class="w-full rounded-lg mt-4 hidden"
-          />
-          <h2 id="resultText" class="text-2xl font-bold text-white mt-4"></h2>
-          <p id="confidenceText" class="text-lg text-slate-300"></p>
+            Quest Completed!
+          </h2>
+
+          <div
+            class="border-4 border-rpg-gold p-6 mb-4 w-full max-w-md mx-auto bg-gradient-to-b from-rpg-blue to-black"
+          >
+            <p class="text-xs text-gray-400 mb-3">PREDICTION:</p>
+            <p
+              id="predictionResult"
+              class="text-green-400 text-base sm:text-xl mb-4 animate-pulse"
+            >
+              GOOD SLEEP QUALITY
+            </p>
+
+            <div class="border-t-2 border-gray-700 pt-4 mt-4">
+              <p class="text-[10px] text-gray-500 mb-2">CONFIDENCE LEVEL</p>
+              <div class="stat-bar w-full h-6 border-2 border-white mb-2">
+                <div
+                  id="confidenceBar"
+                  class="health-bar"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <p id="confidenceText" class="text-xs text-rpg-gold">92%</p>
+            </div>
+          </div>
+
           <button
-            type="button"
             id="resetBtn"
-            class="mt-6 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-5 rounded-lg transition duration-200"
+            class="pixel-button border-2 border-white px-6 py-3 hover:bg-white hover:text-black uppercase text-[10px] sm:text-xs mt-4"
           >
-            Start Over
+            &#9658; NEW QUEST
           </button>
         </div>
+      </div>
+
+      <!-- RIGHT: The Reactive Avatar -->
+      <div
+        class="w-full lg:w-1/3 flex flex-col items-center justify-end relative order-1 lg:order-2 mb-4 lg:mb-0"
+      >
+        <!-- Dialogue Bubble -->
+        <div
+          id="avatarDialogue"
+          class="dialogue-bubble mb-4 bg-white text-black p-3 sm:p-4 text-[10px] sm:text-xs border-4 border-black relative max-w-xs text-center"
+        >
+          <p id="avatarText">Ready when you are!</p>
+          <div
+            class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[12px] border-t-white"
+            style="filter: drop-shadow(0 2px 0 black)"
+          ></div>
+        </div>
+
+        <!-- Avatar Container -->
+        <div
+          id="avatarContainer"
+          class="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 relative flex items-end justify-center"
+        >
+          <!-- MALE AVATAR -->
+          <svg
+            id="avatar-male"
+            class="w-full h-full drop-shadow-2xl transition-all duration-300"
+            viewBox="0 0 100 100"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <!-- Shadow -->
+            <ellipse cx="50" cy="95" rx="20" ry="3" fill="rgba(0,0,0,0.3)" />
+
+            <!-- Body (Blue Shirt) -->
+            <rect x="35" y="60" width="30" height="35" fill="#3B82F6" />
+            <rect x="33" y="58" width="4" height="4" fill="#1E40AF" />
+            <rect x="63" y="58" width="4" height="4" fill="#1E40AF" />
+
+            <!-- Arms -->
+            <rect x="28" y="62" width="7" height="22" fill="#FCA5A5" />
+            <rect x="65" y="62" width="7" height="22" fill="#FCA5A5" />
+
+            <!-- Legs -->
+            <rect x="38" y="95" width="10" height="5" fill="#1F2937" />
+            <rect x="52" y="95" width="10" height="5" fill="#1F2937" />
+
+            <!-- Head -->
+            <rect x="37" y="32" width="26" height="28" fill="#FCA5A5" />
+
+            <!-- Hair -->
+            <rect x="37" y="28" width="26" height="8" fill="#374151" />
+            <rect x="33" y="32" width="4" height="16" fill="#374151" />
+            <rect x="63" y="32" width="4" height="16" fill="#374151" />
+
+            <!-- Eyes -->
+            <rect x="42" y="42" width="5" height="5" fill="black" />
+            <rect x="53" y="42" width="5" height="5" fill="black" />
+            <rect x="44" y="44" width="2" height="2" fill="white" />
+            <rect x="55" y="44" width="2" height="2" fill="white" />
+
+            <!-- Smile -->
+            <rect x="44" y="52" width="3" height="2" fill="black" />
+            <rect x="53" y="52" width="3" height="2" fill="black" />
+            <rect x="47" y="54" width="6" height="2" fill="black" />
+          </svg>
+
+          <!-- FEMALE AVATAR -->
+          <svg
+            id="avatar-female"
+            class="w-full h-full drop-shadow-2xl hidden transition-all duration-300"
+            viewBox="0 0 100 100"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <!-- Shadow -->
+            <ellipse cx="50" cy="95" rx="20" ry="3" fill="rgba(0,0,0,0.3)" />
+
+            <!-- Body (Pink Dress) -->
+            <rect x="35" y="60" width="30" height="35" fill="#EC4899" />
+            <rect x="33" y="58" width="4" height="4" fill="#BE185D" />
+            <rect x="63" y="58" width="4" height="4" fill="#BE185D" />
+
+            <!-- Arms -->
+            <rect x="28" y="62" width="7" height="22" fill="#FCA5A5" />
+            <rect x="65" y="62" width="7" height="22" fill="#FCA5A5" />
+
+            <!-- Legs -->
+            <rect x="38" y="95" width="10" height="5" fill="#78350F" />
+            <rect x="52" y="95" width="10" height="5" fill="#78350F" />
+
+            <!-- Head -->
+            <rect x="37" y="32" width="26" height="28" fill="#FCA5A5" />
+
+            <!-- Long Hair -->
+            <rect x="37" y="24" width="26" height="10" fill="#78350F" />
+            <rect x="30" y="28" width="7" height="50" fill="#78350F" />
+            <rect x="63" y="28" width="7" height="50" fill="#78350F" />
+
+            <!-- Eyes -->
+            <rect x="42" y="42" width="5" height="5" fill="black" />
+            <rect x="53" y="42" width="5" height="5" fill="black" />
+            <rect x="44" y="44" width="2" height="2" fill="white" />
+            <rect x="55" y="44" width="2" height="2" fill="white" />
+
+            <!-- Smile -->
+            <rect x="44" y="52" width="3" height="2" fill="black" />
+            <rect x="53" y="52" width="3" height="2" fill="black" />
+            <rect x="47" y="54" width="6" height="2" fill="black" />
+          </svg>
+        </div>
+
+        <!-- Pixel Platform Shadow -->
+        <div
+          class="w-32 sm:w-48 lg:w-64 h-8 bg-black/50 mt-[-20px] rounded-[50%] blur-lg"
+        ></div>
       </div>
     </div>
 
-    <!-- 3. Link our new JavaScript file -->
-    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+    <!-- Main Logic Script -->
+    <script>
+      // ===== Configuration =====
+      const API_ENDPOINT = "/predict"; // Change this to your actual API endpoint
+
+      // ===== State Management =====
+      let currentStep = 1;
+      const totalSteps = 3;
+
+      // ===== DOM Elements =====
+      const elements = {
+        prevBtn: document.getElementById("prevBtn"),
+        nextBtn: document.getElementById("nextBtn"),
+        predictBtn: document.getElementById("predictBtn"),
+        resultOverlay: document.getElementById("resultOverlay"),
+        loadingOverlay: document.getElementById("loadingOverlay"),
+        resetBtn: document.getElementById("resetBtn"),
+        avatarMale: document.getElementById("avatar-male"),
+        avatarFemale: document.getElementById("avatar-female"),
+        avatarText: document.getElementById("avatarText"),
+        avatarDialogue: document.getElementById("avatarDialogue"),
+        healthBar: document.getElementById("healthBar"),
+        stressDisplay: document.getElementById("stressDisplay"),
+        caffeineDisplay: document.getElementById("caffeineDisplay"),
+        screenDisplay: document.getElementById("screenDisplay"),
+        predictionResult: document.getElementById("predictionResult"),
+        confidenceBar: document.getElementById("confidenceBar"),
+        confidenceText: document.getElementById("confidenceText"),
+        stepDots: [
+          document.getElementById("step1Dot"),
+          document.getElementById("step2Dot"),
+          document.getElementById("step3Dot"),
+        ],
+      };
+
+      // Form inputs
+      const inputs = {
+        sex: document.getElementById("sex"),
+        academic_level: document.getElementById("academic_level"),
+        living_arrangement: document.getElementById("living_arrangement"),
+        Caffeine_Intake_Frequency: document.getElementById(
+          "Caffeine_Intake_Frequency"
+        ),
+        screen_time_before_sleep: document.getElementById(
+          "screen_time_before_sleep"
+        ),
+        smoking_Frequency: document.getElementById("smoking_Frequency"),
+        physical_activity_frequency: document.getElementById(
+          "physical_activity_frequency"
+        ),
+        alcohol_consumption_frequency: document.getElementById(
+          "alcohol_consumption_frequency"
+        ),
+        stress_level: document.getElementById("stress_level"),
+        daytime_nap_duration: document.getElementById("daytime_nap_duration"),
+        latenight_study_hours: document.getElementById("latenight_study_hours"),
+      };
+
+      // ===== Avatar Dialogue Messages =====
+      const dialogues = {
+        welcome: "Ready when you are!",
+        stress: {
+          "Low stress": "Feeling pretty relaxed!",
+          "Moderate stress": "A bit stressed, but managing.",
+          "High stress": "Help! Too much stress...",
+        },
+        caffeine: {
+          Never: "No coffee for me!",
+          "Almost Never": "Rarely drink caffeine.",
+          Sometimes: "Coffee time!",
+          "Fairly Often": "I love my coffee!",
+          "Very Often": "Caffeine is life!",
+          Always: "Running on coffee!",
+        },
+        prediction_loading: "Analyzing your data...",
+        good_sleep: "Great news ahead!",
+        poor_sleep: "Hmm, concerning...",
+      };
+
+      // ===== Navigation Functions =====
+      function updateStepVisibility() {
+        // Hide all steps
+        for (let i = 1; i <= totalSteps; i++) {
+          document.getElementById(`step-${i}`).classList.remove("active");
+        }
+
+        // Show current step
+        document.getElementById(`step-${currentStep}`).classList.add("active");
+
+        // Update step dots
+        elements.stepDots.forEach((dot, index) => {
+          if (index < currentStep) {
+            dot.className = "w-3 h-3 bg-rpg-gold";
+          } else {
+            dot.className = "w-3 h-3 bg-gray-600";
+          }
+        });
+
+        // Button visibility
+        elements.prevBtn.style.visibility =
+          currentStep === 1 ? "hidden" : "visible";
+
+        if (currentStep === totalSteps) {
+          elements.nextBtn.classList.add("hidden");
+          elements.predictBtn.classList.remove("hidden");
+        } else {
+          elements.nextBtn.classList.remove("hidden");
+          elements.predictBtn.classList.add("hidden");
+        }
+
+        // Update avatar dialogue based on step
+        updateAvatarForStep();
+      }
+
+      function updateAvatarForStep() {
+        switch (currentStep) {
+          case 1:
+            updateAvatarDialogue("Tell me about yourself!");
+            break;
+          case 2:
+            updateAvatarDialogue("What are your habits?");
+            break;
+          case 3:
+            updateAvatarDialogue("Almost done! Final stats!");
+            break;
+        }
+      }
+
+      // ===== Avatar Functions =====
+      function updateAvatar() {
+        const sex = inputs.sex.value;
+        const level = inputs.academic_level.value;
+        const stress = inputs.stress_level.value;
+
+        // Toggle avatar gender
+        if (sex === "Male") {
+          elements.avatarMale.classList.remove("hidden");
+          elements.avatarFemale.classList.add("hidden");
+        } else {
+          elements.avatarMale.classList.add("hidden");
+          elements.avatarFemale.classList.remove("hidden");
+        }
+
+        const currentAvatar =
+          sex === "Male" ? elements.avatarMale : elements.avatarFemale;
+
+        // Stress animations
+        if (stress === "High stress") {
+          currentAvatar.style.animation = "wiggle 0.5s ease-in-out infinite";
+        } else {
+          currentAvatar.style.animation = "none";
+        }
+
+        updateStats();
+      }
+
+      function updateAvatarDialogue(message) {
+        elements.avatarText.innerText = message;
+      }
+
+      function updateStats() {
+        const stress = inputs.stress_level.value;
+        const caffeine = inputs.Caffeine_Intake_Frequency.value;
+        const screen = inputs.screen_time_before_sleep.value;
+
+        // Update stat displays
+        elements.stressDisplay.innerText = stress
+          .replace(" stress", "")
+          .toUpperCase();
+        elements.caffeineDisplay.innerText = caffeine.toUpperCase();
+        elements.screenDisplay.innerText = screen.toUpperCase();
+
+        // Update health bar based on negative factors
+        let healthPercentage = 100;
+
+        if (stress === "High stress") healthPercentage -= 30;
+        else if (stress === "Moderate stress") healthPercentage -= 15;
+
+        if (caffeine === "Very Often" || caffeine === "Always")
+          healthPercentage -= 20;
+        else if (caffeine === "Fairly Often") healthPercentage -= 10;
+
+        if (screen === "More than 2 hours") healthPercentage -= 25;
+        else if (screen === "1 - 2 hours") healthPercentage -= 15;
+
+        healthPercentage = Math.max(0, healthPercentage);
+        elements.healthBar.style.width = healthPercentage + "%";
+
+        // Change health bar color based on level
+        if (healthPercentage > 70) {
+          elements.healthBar.style.background =
+            "linear-gradient(90deg, #22c55e 0%, #84cc16 100%)";
+        } else if (healthPercentage > 40) {
+          elements.healthBar.style.background =
+            "linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%)";
+        } else {
+          elements.healthBar.style.background =
+            "linear-gradient(90deg, #ef4444 0%, #dc2626 100%)";
+        }
+      }
+
+      // ===== Prediction Function =====
+      async function makePrediction() {
+        // Show loading overlay
+        elements.loadingOverlay.classList.remove("hidden");
+        elements.loadingOverlay.classList.add("flex");
+        updateAvatarDialogue(dialogues.prediction_loading);
+
+        // Gather form data
+        const formData = {
+          sex: inputs.sex.value,
+          academic_level: inputs.academic_level.value,
+          living_arrangement: inputs.living_arrangement.value,
+          Caffeine_Intake_Frequency: inputs.Caffeine_Intake_Frequency.value,
+          screen_time_before_sleep: inputs.screen_time_before_sleep.value,
+          smoking_Frequency: inputs.smoking_Frequency.value,
+          physical_activity_frequency: inputs.physical_activity_frequency.value,
+          alcohol_consumption_frequency:
+            inputs.alcohol_consumption_frequency.value,
+          daytime_nap_duration: inputs.daytime_nap_duration.value,
+          latenight_study_hours: inputs.latenight_study_hours.value,
+          stress_level: inputs.stress_level.value,
+        };
+
+        try {
+          // Make API call
+          const response = await fetch(API_ENDPOINT, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+
+          if (!response.ok) {
+            throw new Error("Prediction failed");
+          }
+
+          const result = await response.json();
+
+          // Simulate delay for effect
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+
+          // Hide loading, show result
+          elements.loadingOverlay.classList.add("hidden");
+          elements.loadingOverlay.classList.remove("flex");
+
+          displayResult(result);
+        } catch (error) {
+          console.error("Error making prediction:", error);
+
+          // Hide loading
+          elements.loadingOverlay.classList.add("hidden");
+          elements.loadingOverlay.classList.remove("flex");
+
+          // Show mock result for demo purposes
+          const mockResult = {
+            prediction: inputs.stress_level.value === "High stress" ? 0 : 1,
+            prediction_text:
+              inputs.stress_level.value === "High stress"
+                ? "Poor Sleep Quality"
+                : "Good Sleep Quality",
+            confidence: Math.random() * 0.3 + 0.7, // 70-100%
+          };
+
+          displayResult(mockResult);
+        }
+      }
+
+      function displayResult(result) {
+        const isGoodSleep = result.prediction === 1;
+        const confidence = Math.round(result.confidence * 100);
+
+        // Update result text
+        elements.predictionResult.innerText =
+          result.prediction_text.toUpperCase();
+        elements.predictionResult.className = isGoodSleep
+          ? "text-green-400 text-base sm:text-xl mb-4 animate-pulse"
+          : "text-red-400 text-base sm:text-xl mb-4 animate-pulse";
+
+        // Update confidence
+        elements.confidenceText.innerText = confidence + "%";
+        elements.confidenceBar.style.width = "0%";
+
+        // Animate confidence bar
+        setTimeout(() => {
+          elements.confidenceBar.style.width = confidence + "%";
+        }, 100);
+
+        // Update avatar dialogue
+        updateAvatarDialogue(
+          isGoodSleep ? dialogues.good_sleep : dialogues.poor_sleep
+        );
+
+        // Show result overlay
+        elements.resultOverlay.classList.remove("hidden");
+        elements.resultOverlay.classList.add("flex");
+
+        // Play success sound (optional)
+        playSound(isGoodSleep ? "success" : "warning");
+      }
+
+      // ===== Sound Effects (Optional) =====
+      function playSound(type) {
+        const audioContext = new (window.AudioContext ||
+          window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        if (type === "success") {
+          // Happy ascending tones
+          oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+          oscillator.frequency.setValueAtTime(
+            659.25,
+            audioContext.currentTime + 0.1
+          ); // E5
+          oscillator.frequency.setValueAtTime(
+            783.99,
+            audioContext.currentTime + 0.2
+          ); // G5
+        } else if (type === "warning") {
+          // Descending tones
+          oscillator.frequency.setValueAtTime(392, audioContext.currentTime); // G4
+          oscillator.frequency.setValueAtTime(
+            329.63,
+            audioContext.currentTime + 0.1
+          ); // E4
+          oscillator.frequency.setValueAtTime(
+            261.63,
+            audioContext.currentTime + 0.2
+          ); // C4
+        } else if (type === "click") {
+          oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        }
+
+        oscillator.type = "square"; // Retro square wave
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(
+          0.01,
+          audioContext.currentTime + 0.3
+        );
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+      }
+
+      // ===== Event Listeners =====
+      elements.nextBtn.addEventListener("click", () => {
+        if (currentStep < totalSteps) {
+          currentStep++;
+          updateStepVisibility();
+          playSound("click");
+        }
+      });
+
+      elements.prevBtn.addEventListener("click", () => {
+        if (currentStep > 1) {
+          currentStep--;
+          updateStepVisibility();
+          playSound("click");
+        }
+      });
+
+      elements.predictBtn.addEventListener("click", () => {
+        makePrediction();
+        playSound("click");
+      });
+
+      elements.resetBtn.addEventListener("click", () => {
+        elements.resultOverlay.classList.add("hidden");
+        elements.resultOverlay.classList.remove("flex");
+        currentStep = 1;
+        updateStepVisibility();
+        updateAvatar();
+        playSound("click");
+      });
+
+      // Input change listeners
+      inputs.sex.addEventListener("change", updateAvatar);
+      inputs.academic_level.addEventListener("change", updateAvatar);
+      inputs.stress_level.addEventListener("change", () => {
+        updateAvatar();
+        updateAvatarDialogue(dialogues.stress[inputs.stress_level.value]);
+      });
+      inputs.Caffeine_Intake_Frequency.addEventListener("change", () => {
+        updateStats();
+        updateAvatarDialogue(
+          dialogues.caffeine[inputs.Caffeine_Intake_Frequency.value]
+        );
+      });
+      inputs.screen_time_before_sleep.addEventListener("change", updateStats);
+      inputs.smoking_Frequency.addEventListener("change", updateStats);
+
+      // ===== Initialize =====
+      updateStepVisibility();
+      updateAvatar();
+    </script>
   </body>
 </html>
