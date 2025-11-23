@@ -28,11 +28,6 @@ ORDINAL_MAPPING = {
     'stress_level': {'Low stress': 0, 'Moderate stress':1, 'High stress':2}
 }
 
-# this was based on training data median values
-MEDIAN_NAP_DURATION = 120 
-MEDIAN_LATENIGHT_HOURS = 12
-
-
 # --- 4. PREPROCESSING FUNCTION ---
 def preprocess_input(data):
     """
@@ -40,7 +35,6 @@ def preprocess_input(data):
     the full preprocessing pipeline, matching the notebook.
     """
     
-    # A) Convert raw JSON/dict to a DataFrame
     original_cols_order = [
         'sex', 'academic_level', 'living_arrangement', 
         'Caffeine_Intake_Frequency', 'screen_time_before_sleep',
@@ -50,26 +44,15 @@ def preprocess_input(data):
     ]
     df = pd.DataFrame([data], columns=original_cols_order)
     
-    # B) Apply Ordinal Mapping (Text -> Numbers)
     for col, map_dict in ORDINAL_MAPPING.items():
         if col in df.columns:
             df[col] = df[col].map(map_dict)
     
-    # C) Apply Custom Parsers (Messy Text -> Numbers)
     df['daytime_nap_duration'] = df['daytime_nap_duration'].apply(parse_nap_duration_to_minutes)
     df['latenight_study_hours'] = df['latenight_study_hours'].apply(parse_latenight_study_hours)
 
-    # D) Apply Cap (Domain Knowledge)
-    df.loc[df['daytime_nap_duration'] > 120, 'daytime_nap_duration'] = np.nan
-    
-    # # E) Apply Imputers with hardcoded medians from training data
-    df['daytime_nap_duration'] = df['daytime_nap_duration'].fillna(MEDIAN_NAP_DURATION)
-    df['latenight_study_hours'] = df['latenight_study_hours'].fillna(MEDIAN_LATENIGHT_HOURS)
-    
-    # F) Apply One-Hot Encoder with proper separator
     df = pd.get_dummies(df, columns=['living_arrangement'], prefix='living', prefix_sep='_', dtype=int)
     
-    # G) CRITICAL: Align Columns to the Final Template
     df_final = df.reindex(columns=model_columns_final, fill_value=0)
     
     return df_final
