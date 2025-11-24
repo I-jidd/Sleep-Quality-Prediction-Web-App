@@ -513,11 +513,8 @@
                     />
                   </div>
                 </div>
-                <p
-                  class="text-[8px] text-gray-500 mt-2"
-                  id="studyDurationDisplay"
-                >
-                  Duration: 1.0 hours
+                <p class="text-[8px] text-gray-400 mt-2" id="studyTimeDisplay">
+                  Time range: 10:00pm - 11:00pm
                 </p>
               </div>
             </div>
@@ -793,47 +790,31 @@
         study_end_time: document.getElementById("study_end_time"),
       };
 
-      // ===== Time Calculation Helper =====
-      function calculateStudyDuration(startTime, endTime) {
-        // Parse time strings (HH:MM format)
-        const [startHour, startMin] = startTime.split(":").map(Number);
-        const [endHour, endMin] = endTime.split(":").map(Number);
-
-        // Convert to minutes since midnight
-        let startMinutes = startHour * 60 + startMin;
-        let endMinutes = endHour * 60 + endMin;
-
-        // If end time is earlier than start time, it means it crosses midnight
-        // For example: 11 PM (23:00) to 1 AM (01:00)
-        if (endMinutes <= startMinutes) {
-          endMinutes += 24 * 60; // Add 24 hours worth of minutes
-        }
-
-        // Calculate duration in hours
-        const durationMinutes = endMinutes - startMinutes;
-        const durationHours = durationMinutes / 60;
-
-        return durationHours;
+      // ===== Time Display Helper =====
+      function formatTimeToAMPM(time24) {
+        // Convert 24-hour format (HH:MM) to 12-hour format with am/pm
+        const [hours, minutes] = time24.split(":").map(Number);
+        const period = hours >= 12 ? "pm" : "am";
+        const hours12 = hours % 12 || 12; // Convert 0 to 12
+        return `${hours12}:${minutes.toString().padStart(2, "0")}${period}`;
       }
 
-      function updateStudyDuration() {
+      function updateStudyTimeDisplay() {
         const startTime = inputs.study_start_time.value;
         const endTime = inputs.study_end_time.value;
-        const duration = calculateStudyDuration(startTime, endTime);
 
-        const displayElement = document.getElementById("studyDurationDisplay");
-        displayElement.textContent = `Duration: ${duration.toFixed(1)} hours`;
+        const startFormatted = formatTimeToAMPM(startTime);
+        const endFormatted = formatTimeToAMPM(endTime);
 
-        // Color code based on duration
-        if (duration > 4) {
-          displayElement.className = "text-[8px] text-red-400 mt-2";
-        } else if (duration > 2) {
-          displayElement.className = "text-[8px] text-yellow-400 mt-2";
-        } else {
-          displayElement.className = "text-[8px] text-green-400 mt-2";
-        }
+        const displayElement = document.getElementById("studyTimeDisplay");
+        displayElement.textContent = `Time range: ${startFormatted} - ${endFormatted}`;
+      }
 
-        return duration;
+      function formatStudyTimeForAPI(startTime, endTime) {
+        // Format as "10:00pm - 1:00am" for your preprocessing.py
+        const startFormatted = formatTimeToAMPM(startTime);
+        const endFormatted = formatTimeToAMPM(endTime);
+        return `${startFormatted} - ${endFormatted}`;
       }
 
       // ===== Avatar Dialogue Messages =====
@@ -986,13 +967,13 @@
         elements.loadingOverlay.classList.add("flex");
         updateAvatarDialogue(dialogues.prediction_loading);
 
-        // Calculate study duration from time inputs
-        const studyDuration = calculateStudyDuration(
+        // Format study time as "10:00pm - 1:00am" for preprocessing.py
+        const studyTimeString = formatStudyTimeForAPI(
           inputs.study_start_time.value,
           inputs.study_end_time.value
         );
 
-        // Gather form data - make sure field names match your Flask API exactly
+        // Gather form data - send raw time string to backend
         const formData = {
           sex: inputs.sex.value,
           academic_level: inputs.academic_level.value,
@@ -1004,20 +985,11 @@
           alcohol_consumption_frequency:
             inputs.alcohol_consumption_frequency.value,
           daytime_nap_duration: inputs.daytime_nap_duration.value,
-          latenight_study_hours: studyDuration.toString(), // Send calculated duration
+          latenight_study_hours: studyTimeString, // Send as string like "10:00pm - 1:00am"
           stress_level: inputs.stress_level.value,
         };
 
         console.log("Sending prediction request with data:", formData);
-        console.log(
-          "Study time: " +
-            inputs.study_start_time.value +
-            " to " +
-            inputs.study_end_time.value +
-            " = " +
-            studyDuration +
-            " hours"
-        );
 
         try {
           // Make API call to your Flask backend
@@ -1292,13 +1264,16 @@
       });
       inputs.screen_time_before_sleep.addEventListener("change", updateStats);
       inputs.smoking_Frequency.addEventListener("change", updateStats);
-      inputs.study_start_time.addEventListener("change", updateStudyDuration);
-      inputs.study_end_time.addEventListener("change", updateStudyDuration);
+      inputs.study_start_time.addEventListener(
+        "change",
+        updateStudyTimeDisplay
+      );
+      inputs.study_end_time.addEventListener("change", updateStudyTimeDisplay);
 
       // ===== Initialize =====
       updateStepVisibility();
       updateAvatar();
-      updateStudyDuration(); // Initialize study duration display
+      updateStudyTimeDisplay(); // Initialize time display
 
       // Music starts OFF by default (user must click to enable)
       console.log("DreamWell initialized. Click music button to start audio.");
