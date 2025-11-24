@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 import pickle
-from flask import Flask, request, jsonify, render_template
+import os
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from preprocessing import preprocess_input  
 
 # --- 1. Initialize Flask App ---
@@ -55,3 +56,14 @@ def predict():
     except Exception as e:
         print(f"Error during prediction: {e}")
         return jsonify({"error": "Failed to process request."}), 500
+    
+@app.route('/sound/<path:filename>')
+def serve_sound(filename):
+    sound_dir = os.path.join(os.path.dirname(__file__), 'sound')
+    file_path = os.path.join(sound_dir, filename)
+    
+    return send_from_directory(sound_dir, filename)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
