@@ -950,7 +950,7 @@
           }
 
           const result = await response.json();
-
+          console.log("Prediction result from API:", result);
           // Simulate delay for effect
           await new Promise((resolve) => setTimeout(resolve, 1500));
 
@@ -961,21 +961,21 @@
           displayResult(result);
         } catch (error) {
           console.error("Error making prediction:", error);
-
+          console.error("Error details:", error.message);
           // Hide loading
           elements.loadingOverlay.classList.add("hidden");
           elements.loadingOverlay.classList.remove("flex");
 
-          // Show mock result for demo purposes
-          const mockResult = {
-            prediction: inputs.stress_level.value === "High stress" ? 0 : 1,
-            prediction_text:
-              inputs.stress_level.value === "High stress"
-                ? "Poor Sleep Quality"
-                : "Good Sleep Quality",
-            confidence: Math.random() * 0.3 + 0.7, // 70-100%
-          };
-
+          alert(
+            "Failed to get prediction from server. Please make sure:\n" +
+              "1. Flask server is running\n" +
+              "2. API endpoint is correct: " +
+              API_ENDPOINT +
+              "\n" +
+              "3. Check browser console for details\n\n" +
+              "Error: " +
+              error.message
+          );
           displayResult(mockResult);
         }
       }
