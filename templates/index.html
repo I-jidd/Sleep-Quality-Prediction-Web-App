@@ -483,19 +483,42 @@
 
               <div>
                 <label class="block text-[10px] sm:text-xs text-yellow-200 mb-2"
-                  >> LATE NIGHT STUDY (HOURS)</label
+                  >> LATE NIGHT STUDY TIME</label
                 >
-                <input
-                  type="number"
-                  id="latenight_study_hours"
-                  name="latenight_study_hours"
-                  value="0"
-                  min="0"
-                  max="12"
-                  step="0.5"
-                  required
-                  class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs font-pixel hover:border-rpg-gold"
-                />
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-[8px] text-gray-400 mb-1"
+                      >START TIME</label
+                    >
+                    <input
+                      type="time"
+                      id="study_start_time"
+                      name="study_start_time"
+                      value="22:00"
+                      required
+                      class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs font-pixel hover:border-rpg-gold"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-[8px] text-gray-400 mb-1"
+                      >END TIME</label
+                    >
+                    <input
+                      type="time"
+                      id="study_end_time"
+                      name="study_end_time"
+                      value="23:00"
+                      required
+                      class="w-full bg-black border-2 border-white text-white p-2 sm:p-3 text-[10px] sm:text-xs font-pixel hover:border-rpg-gold"
+                    />
+                  </div>
+                </div>
+                <p
+                  class="text-[8px] text-gray-500 mt-2"
+                  id="studyDurationDisplay"
+                >
+                  Duration: 1.0 hours
+                </p>
               </div>
             </div>
           </div>
@@ -766,8 +789,52 @@
         ),
         stress_level: document.getElementById("stress_level"),
         daytime_nap_duration: document.getElementById("daytime_nap_duration"),
-        latenight_study_hours: document.getElementById("latenight_study_hours"),
+        study_start_time: document.getElementById("study_start_time"),
+        study_end_time: document.getElementById("study_end_time"),
       };
+
+      // ===== Time Calculation Helper =====
+      function calculateStudyDuration(startTime, endTime) {
+        // Parse time strings (HH:MM format)
+        const [startHour, startMin] = startTime.split(":").map(Number);
+        const [endHour, endMin] = endTime.split(":").map(Number);
+
+        // Convert to minutes since midnight
+        let startMinutes = startHour * 60 + startMin;
+        let endMinutes = endHour * 60 + endMin;
+
+        // If end time is earlier than start time, it means it crosses midnight
+        // For example: 11 PM (23:00) to 1 AM (01:00)
+        if (endMinutes <= startMinutes) {
+          endMinutes += 24 * 60; // Add 24 hours worth of minutes
+        }
+
+        // Calculate duration in hours
+        const durationMinutes = endMinutes - startMinutes;
+        const durationHours = durationMinutes / 60;
+
+        return durationHours;
+      }
+
+      function updateStudyDuration() {
+        const startTime = inputs.study_start_time.value;
+        const endTime = inputs.study_end_time.value;
+        const duration = calculateStudyDuration(startTime, endTime);
+
+        const displayElement = document.getElementById("studyDurationDisplay");
+        displayElement.textContent = `Duration: ${duration.toFixed(1)} hours`;
+
+        // Color code based on duration
+        if (duration > 4) {
+          displayElement.className = "text-[8px] text-red-400 mt-2";
+        } else if (duration > 2) {
+          displayElement.className = "text-[8px] text-yellow-400 mt-2";
+        } else {
+          displayElement.className = "text-[8px] text-green-400 mt-2";
+        }
+
+        return duration;
+      }
 
       // ===== Avatar Dialogue Messages =====
       const dialogues = {
@@ -919,7 +986,13 @@
         elements.loadingOverlay.classList.add("flex");
         updateAvatarDialogue(dialogues.prediction_loading);
 
-        // Gather form data
+        // Calculate study duration from time inputs
+        const studyDuration = calculateStudyDuration(
+          inputs.study_start_time.value,
+          inputs.study_end_time.value
+        );
+
+        // Gather form data - make sure field names match your Flask API exactly
         const formData = {
           sex: inputs.sex.value,
           academic_level: inputs.academic_level.value,
@@ -931,12 +1004,23 @@
           alcohol_consumption_frequency:
             inputs.alcohol_consumption_frequency.value,
           daytime_nap_duration: inputs.daytime_nap_duration.value,
-          latenight_study_hours: inputs.latenight_study_hours.value,
+          latenight_study_hours: studyDuration.toString(), // Send calculated duration
           stress_level: inputs.stress_level.value,
         };
 
+        console.log("Sending prediction request with data:", formData);
+        console.log(
+          "Study time: " +
+            inputs.study_start_time.value +
+            " to " +
+            inputs.study_end_time.value +
+            " = " +
+            studyDuration +
+            " hours"
+        );
+
         try {
-          // Make API call
+          // Make API call to your Flask backend
           const response = await fetch(API_ENDPOINT, {
             method: "POST",
             headers: {
@@ -945,27 +1029,33 @@
             body: JSON.stringify(formData),
           });
 
+          console.log("Response status:", response.status);
+
           if (!response.ok) {
-            throw new Error("Prediction failed");
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
 
           const result = await response.json();
           console.log("Prediction result from API:", result);
+
           // Simulate delay for effect
-          await new Promise((resolve) => setTimeout(resolve, 1500));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
 
           // Hide loading, show result
           elements.loadingOverlay.classList.add("hidden");
           elements.loadingOverlay.classList.remove("flex");
 
+          // Display the REAL model prediction
           displayResult(result);
         } catch (error) {
           console.error("Error making prediction:", error);
           console.error("Error details:", error.message);
+
           // Hide loading
           elements.loadingOverlay.classList.add("hidden");
           elements.loadingOverlay.classList.remove("flex");
 
+          // Show error message to user
           alert(
             "Failed to get prediction from server. Please make sure:\n" +
               "1. Flask server is running\n" +
@@ -976,7 +1066,6 @@
               "Error: " +
               error.message
           );
-          displayResult(mockResult);
         }
       }
 
@@ -1203,10 +1292,13 @@
       });
       inputs.screen_time_before_sleep.addEventListener("change", updateStats);
       inputs.smoking_Frequency.addEventListener("change", updateStats);
+      inputs.study_start_time.addEventListener("change", updateStudyDuration);
+      inputs.study_end_time.addEventListener("change", updateStudyDuration);
 
       // ===== Initialize =====
       updateStepVisibility();
       updateAvatar();
+      updateStudyDuration(); // Initialize study duration display
 
       // Music starts OFF by default (user must click to enable)
       console.log("DreamWell initialized. Click music button to start audio.");
