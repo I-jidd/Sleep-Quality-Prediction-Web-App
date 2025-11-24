@@ -187,9 +187,10 @@
     <button
       id="musicToggle"
       class="fixed top-4 right-4 z-[100] pixel-button nes-container bg-rpg-blue p-3 text-[10px] hover:bg-opacity-80 flex items-center gap-2 cursor-pointer"
+      title="Click to toggle background music"
     >
-      <span id="musicIcon">🔊</span>
-      <span id="musicText">MUSIC ON</span>
+      <span id="musicIcon">🔇</span>
+      <span id="musicText">MUSIC OFF</span>
     </button>
 
     <!-- Main Game Container -->
@@ -1060,141 +1061,95 @@
       }
 
       // ===== Background Music System =====
-      let musicContext = null;
+      let backgroundMusic = null;
       let musicPlaying = false;
-      let currentMusicNodes = [];
+      let musicEnabled = false;
 
-      // 8-bit melody notes (C major pentatonic scale - calming and nostalgic)
-      const melody = [
-        { note: 523.25, duration: 0.4 }, // C5
-        { note: 587.33, duration: 0.4 }, // D5
-        { note: 659.25, duration: 0.4 }, // E5
-        { note: 523.25, duration: 0.4 }, // C5
-        { note: 392.0, duration: 0.8 }, // G4
-        { note: 440.0, duration: 0.4 }, // A4
-        { note: 493.88, duration: 0.4 }, // B4
-        { note: 523.25, duration: 0.8 }, // C5
-        { note: 659.25, duration: 0.4 }, // E5
-        { note: 587.33, duration: 0.4 }, // D5
-        { note: 523.25, duration: 0.4 }, // C5
-        { note: 392.0, duration: 0.4 }, // G4
-        { note: 329.63, duration: 1.2 }, // E4
-      ];
+      function initBackgroundMusic() {
+        if (!backgroundMusic) {
+          try {
+            backgroundMusic = new Audio(
+              "sound/retro-arcade-game-music-297305.mp3"
+            );
+            backgroundMusic.loop = true;
+            backgroundMusic.volume = 0.3; // Set to 30% volume (adjust as needed)
 
-      // Bass line (plays simultaneously with melody)
-      const bass = [
-        { note: 130.81, duration: 1.6 }, // C3
-        { note: 196.0, duration: 1.6 }, // G3
-        { note: 164.81, duration: 1.6 }, // E3
-        { note: 130.81, duration: 1.6 }, // C3
-      ];
+            // Handle loading errors
+            backgroundMusic.addEventListener("error", (e) => {
+              console.error("Error loading music file:", e);
+              const musicIcon = document.getElementById("musicIcon");
+              const musicText = document.getElementById("musicText");
+              musicIcon.innerText = "❌";
+              musicText.innerText = "NO AUDIO";
+            });
 
-      function playBackgroundMusic() {
-        if (!musicContext) {
-          musicContext = new (window.AudioContext ||
-            window.webkitAudioContext)();
+            // Log when music is ready
+            backgroundMusic.addEventListener("canplaythrough", () => {
+              console.log("Background music loaded successfully");
+            });
+
+            console.log("Audio element created");
+          } catch (error) {
+            console.error("Failed to create Audio element:", error);
+            return false;
+          }
+        }
+        return true;
+      }
+
+      async function playBackgroundMusic() {
+        if (!initBackgroundMusic()) {
+          console.error("Failed to initialize music");
+          return;
         }
 
-        // Stop any currently playing music
-        stopBackgroundMusic();
+        try {
+          // Reset to beginning if needed
+          backgroundMusic.currentTime = 0;
 
-        musicPlaying = true;
-        let currentTime = musicContext.currentTime;
-        let melodyTime = 0;
-        let bassTime = 0;
+          // Play the audio
+          await backgroundMusic.play();
 
-        // Schedule melody notes
-        melody.forEach((note) => {
-          const osc = musicContext.createOscillator();
-          const gain = musicContext.createGain();
-
-          osc.type = "square"; // Classic 8-bit sound
-          osc.frequency.setValueAtTime(note.note, currentTime + melodyTime);
-
-          gain.gain.setValueAtTime(0, currentTime + melodyTime);
-          gain.gain.linearRampToValueAtTime(
-            0.08,
-            currentTime + melodyTime + 0.01
-          );
-          gain.gain.exponentialRampToValueAtTime(
-            0.01,
-            currentTime + melodyTime + note.duration
-          );
-
-          osc.connect(gain);
-          gain.connect(musicContext.destination);
-
-          osc.start(currentTime + melodyTime);
-          osc.stop(currentTime + melodyTime + note.duration);
-
-          currentMusicNodes.push(osc);
-          melodyTime += note.duration;
-        });
-
-        // Schedule bass notes
-        bass.forEach((note) => {
-          const osc = musicContext.createOscillator();
-          const gain = musicContext.createGain();
-
-          osc.type = "triangle"; // Softer bass sound
-          osc.frequency.setValueAtTime(note.note, currentTime + bassTime);
-
-          gain.gain.setValueAtTime(0, currentTime + bassTime);
-          gain.gain.linearRampToValueAtTime(
-            0.05,
-            currentTime + bassTime + 0.01
-          );
-          gain.gain.exponentialRampToValueAtTime(
-            0.01,
-            currentTime + bassTime + note.duration
-          );
-
-          osc.connect(gain);
-          gain.connect(musicContext.destination);
-
-          osc.start(currentTime + bassTime);
-          osc.stop(currentTime + bassTime + note.duration);
-
-          currentMusicNodes.push(osc);
-          bassTime += note.duration;
-        });
-
-        // Loop the music
-        const totalDuration = Math.max(melodyTime, bassTime);
-        setTimeout(() => {
-          if (musicPlaying) {
-            playBackgroundMusic();
-          }
-        }, totalDuration * 1000);
+          musicPlaying = true;
+          musicEnabled = true;
+          console.log("Music started playing");
+        } catch (error) {
+          console.error("Failed to play music:", error);
+          // Show error in UI
+          const musicIcon = document.getElementById("musicIcon");
+          const musicText = document.getElementById("musicText");
+          musicIcon.innerText = "❌";
+          musicText.innerText = "PLAY FAILED";
+        }
       }
 
       function stopBackgroundMusic() {
-        musicPlaying = false;
-        currentMusicNodes.forEach((node) => {
-          try {
-            node.stop();
-          } catch (e) {
-            // Node might already be stopped
-          }
-        });
-        currentMusicNodes = [];
+        if (backgroundMusic) {
+          backgroundMusic.pause();
+          backgroundMusic.currentTime = 0;
+          musicPlaying = false;
+          console.log("Music stopped");
+        }
       }
 
-      function toggleMusic() {
+      async function toggleMusic() {
         const musicToggle = document.getElementById("musicToggle");
         const musicIcon = document.getElementById("musicIcon");
         const musicText = document.getElementById("musicText");
 
         if (musicPlaying) {
           stopBackgroundMusic();
+          musicEnabled = false;
           musicIcon.innerText = "🔇";
           musicText.innerText = "MUSIC OFF";
           musicToggle.classList.remove("animate-pulse");
         } else {
-          playBackgroundMusic();
-          musicIcon.innerText = "🔊";
-          musicText.innerText = "MUSIC ON";
-          musicToggle.classList.add("animate-pulse");
+          await playBackgroundMusic();
+          if (musicPlaying) {
+            musicIcon.innerText = "🔊";
+            musicText.innerText = "MUSIC ON";
+            musicToggle.classList.add("animate-pulse");
+          }
         }
       }
 
@@ -1253,11 +1208,8 @@
       updateStepVisibility();
       updateAvatar();
 
-      // Auto-start music after a short delay (better UX)
-      setTimeout(() => {
-        playBackgroundMusic();
-        document.getElementById("musicToggle").classList.add("animate-pulse");
-      }, 1000);
+      // Music starts OFF by default (user must click to enable)
+      console.log("DreamWell initialized. Click music button to start audio.");
     </script>
   </body>
 </html>
