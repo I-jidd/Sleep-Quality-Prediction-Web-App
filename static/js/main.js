@@ -1164,22 +1164,16 @@ function showSleepSprite(isGoodSleep, level, sex) {
     sleepSpriteHTML = sleepSpritesPoor[level][gender];
   }
 
-  // Create or update sleep sprite container in result overlay
-  let sleepSpriteContainer = document.getElementById("resultSleepSprite");
+  // Update dedicated sleep sprite container in result overlay
+  const sleepSpriteContainer = document.getElementById("resultSpriteSlot");
   if (!sleepSpriteContainer) {
-    sleepSpriteContainer = document.createElement("div");
-    sleepSpriteContainer.id = "resultSleepSprite";
-    sleepSpriteContainer.className = "w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-4";
-
-    // Insert before the prediction text
-    const resultBox = elements.resultOverlay.querySelector(".border-2");
-    const predictionText =
-      elements.resultOverlay.querySelector("#predictionResult");
-    resultBox.insertBefore(sleepSpriteContainer, predictionText);
+    console.warn("Result sprite slot not found in DOM.");
+    return;
   }
 
   sleepSpriteContainer.innerHTML =
-    sleepSpriteHTML || '<div class="text-red-500">Sprite not found</div>';
+    sleepSpriteHTML ||
+    '<div class="text-red-500 text-[10px] text-center px-2">Sprite not found</div>';
 }
 
 // ===== Sound Effects =====
