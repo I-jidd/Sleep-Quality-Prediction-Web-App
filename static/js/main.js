@@ -5,6 +5,800 @@ const API_ENDPOINT = "/predict";
 let currentStep = 1;
 const totalSteps = 3;
 
+// ===== Sprite Data =====
+const sprites = {
+  male: {
+    "First Year": `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Hair top -->
+      <rect x="11" y="3" width="10" height="2" fill="#5c4033"/>
+      <rect x="11" y="5" width="10" height="1" fill="#4b352b"/>
+      <!-- Hair sides -->
+      <rect x="10" y="4" width="2" height="4" fill="#5c4033"/>
+      <rect x="20" y="4" width="2" height="4" fill="#5c4033"/>
+
+      <!-- Face -->
+      <rect x="11" y="6" width="10" height="7" fill="#ffccaa"/>
+      <!-- Face shading -->
+      <rect x="11" y="6" width="3" height="7" fill="#e8b89a"/>
+      <rect x="18" y="6" width="3" height="7" fill="#e8b89a"/>
+
+      <!-- Eyes -->
+      <rect x="13" y="8" width="2" height="2" fill="#111"/>
+      <rect x="17" y="8" width="2" height="2" fill="#111"/>
+
+      <!-- Mouth -->
+      <rect x="14" y="11" width="4" height="1" fill="#7a4d45"/>
+
+      <!-- Shirt -->
+      <rect x="10" y="13" width="12" height="10" fill="#3b82f6"/>
+      <!-- Shirt shading -->
+      <rect x="10" y="13" width="5" height="10" fill="#2f6ccc"/>
+      <rect x="17" y="13" width="5" height="10" fill="#4d96ff"/>
+
+      <!-- Pants -->
+      <rect x="11" y="23" width="4" height="9" fill="#1e3a8a"/>
+      <rect x="17" y="23" width="4" height="9" fill="#1e3a8a"/>
+      <!-- Pants shading -->
+      <rect x="11" y="23" width="2" height="9" fill="#162c66"/>
+      <rect x="19" y="23" width="2" height="9" fill="#162c66"/>
+    </svg>
+    `,
+    "Second Year": `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Hair -->
+      <rect x="10" y="2" width="12" height="2" fill="#3f2e26"/>
+      <rect x="10" y="4" width="12" height="2" fill="#4b3a30"/>
+      <rect x="11" y="6" width="10" height="1" fill="#2a211c"/>
+
+      <!-- Face base -->
+      <rect x="11" y="7" width="10" height="8" fill="#ffccaa"/>
+      <!-- Face shading -->
+      <rect x="11" y="7" width="3" height="8" fill="#e8b89a"/>
+      <rect x="18" y="7" width="3" height="8" fill="#e8b89a"/>
+
+      <!-- Eyes -->
+      <rect x="12" y="10" width="2" height="2" fill="#111"/>
+      <rect x="18" y="10" width="2" height="2" fill="#111"/>
+
+      <!-- Mouth -->
+      <rect x="14" y="13" width="4" height="1" fill="#7a4d45"/>
+
+      <!-- Hair sides -->
+      <rect x="10" y="7" width="1" height="8" fill="#3f2e26"/>
+      <rect x="21" y="7" width="1" height="8" fill="#3f2e26"/>
+
+      <!-- Torso (green shirt) -->
+      <rect x="10" y="15" width="12" height="10" fill="#10b981"/>
+      <!-- Shirt shading -->
+      <rect x="10" y="15" width="5" height="10" fill="#0c8667"/>
+      <rect x="17" y="15" width="5" height="10" fill="#15d49a"/>
+
+      <!-- Pants -->
+      <rect x="11" y="25" width="4" height="8" fill="#064e3b"/>
+      <rect x="17" y="25" width="4" height="8" fill="#064e3b"/>
+      <!-- Pants shading -->
+      <rect x="11" y="25" width="2" height="8" fill="#043a2c"/>
+      <rect x="19" y="25" width="2" height="8" fill="#043a2c"/>
+    </svg>
+`,
+    "Third Year": `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Hair -->
+      <rect x="10" y="2" width="12" height="2" fill="#3b2f28"/>
+      <rect x="10" y="4" width="12" height="2" fill="#4a3b32"/>
+      <rect x="11" y="6" width="10" height="1" fill="#2c2420"/>
+
+      <!-- Face base -->
+      <rect x="11" y="7" width="10" height="7" fill="#eddcd2"/>
+      <!-- Face shading -->
+      <rect x="11" y="7" width="3" height="7" fill="#e2c9bb"/>
+      <rect x="18" y="7" width="3" height="7" fill="#e2c9bb"/>
+
+      <!-- Eyes -->
+      <rect x="12" y="9" width="2" height="2" fill="#111"/>
+      <rect x="18" y="9" width="2" height="2" fill="#111"/>
+
+      <!-- Mouth -->
+      <rect x="14" y="12" width="4" height="1" fill="#754c47"/>
+
+      <!-- Hair sides -->
+      <rect x="10" y="7" width="1" height="7" fill="#3b2f28"/>
+      <rect x="21" y="7" width="1" height="7" fill="#3b2f28"/>
+
+      <!-- Torso (jacket/shirt) -->
+      <rect x="9" y="13" width="14" height="11" fill="#475569"/>
+      <!-- Torso shading -->
+      <rect x="9" y="13" width="5" height="11" fill="#354556"/>
+      <rect x="18" y="13" width="5" height="11" fill="#566374"/>
+
+      <!-- Pants -->
+      <rect x="11" y="24" width="4" height="8" fill="#1e293b"/>
+      <rect x="17" y="24" width="4" height="8" fill="#1e293b"/>
+      <!-- Pants shading -->
+      <rect x="11" y="24" width="2" height="8" fill="#162030"/>
+      <rect x="19" y="24" width="2" height="8" fill="#162030"/>
+      </svg>`,
+    "Fourth Year": `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+
+      <!-- Hair (top) -->
+      <rect x="9" y="2" width="14" height="3" fill="#1a1839"/>
+      <rect x="10" y="5" width="12" height="2" fill="#23204d"/>
+      <rect x="11" y="7" width="10" height="1" fill="#0f0d22"/>
+
+      <!-- Face base -->
+      <rect x="11" y="8" width="10" height="8" fill="#f2c9a9"/>
+      <!-- Face shading -->
+      <rect x="11" y="8" width="3" height="8" fill="#e4b896"/>
+      <rect x="18" y="8" width="3" height="8" fill="#e4b896"/>
+
+      <!-- Eyes -->
+      <rect x="13" y="11" width="2" height="2" fill="#000"/>
+      <rect x="17" y="11" width="2" height="2" fill="#000"/>
+
+      <!-- Mouth -->
+      <rect x="14" y="14" width="4" height="1" fill="#8b4b4b"/>
+
+      <!-- Hair sides -->
+      <rect x="10" y="8" width="1" height="7" fill="#1a1839"/>
+      <rect x="21" y="8" width="1" height="7" fill="#1a1839"/>
+
+      <!-- Body (shirt) -->
+      <rect x="9" y="16" width="14" height="11" fill="#4c1d95"/>
+      <!-- Shirt shading -->
+      <rect x="9" y="16" width="5" height="11" fill="#3c1878"/>
+      <rect x="18" y="16" width="5" height="11" fill="#5d25b0"/>
+      
+      <!-- LEGS (added) -->
+      <rect x="11" y="27" width="4" height="5" fill="#2e1659"/>
+      <rect x="17" y="27" width="4" height="5" fill="#2e1659"/>
+
+      <!-- Leg shading -->
+      <rect x="11" y="27" width="2" height="5" fill="#1f0f3c"/>
+      <rect x="19" y="27" width="2" height="5" fill="#1f0f3c"/>
+
+      <!-- Collar -->
+      <rect x="13" y="16" width="6" height="2" fill="#d3c7ff"/>
+    </svg>`,
+  },
+  female: {
+    "First Year": `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <!-- Hair Back -->
+        <rect x="8" y="4" width="16" height="12" fill="#3f2e26"/>
+        <!-- Face -->
+        <rect x="10" y="5" width="12" height="10" fill="#ffccaa"/>
+        <!-- Hair Front -->
+        <rect x="9" y="4" width="14" height="4" fill="#3f2e26"/>
+        <!-- Eyes -->
+        <rect x="12" y="8" width="2" height="2" fill="#111"/>
+        <rect x="18" y="8" width="2" height="2" fill="#111"/>
+        <!-- Blush -->
+        <rect x="11" y="11" width="2" height="1" fill="#ff99cc" opacity="0.7"/>
+        <rect x="19" y="11" width="2" height="1" fill="#ff99cc" opacity="0.7"/>
+        <!-- Body -->
+        <rect x="10" y="15" width="12" height="10" fill="#ec4899"/>
+        <!-- Arms -->
+        <rect x="8" y="15" width="2" height="8" fill="#ec4899"/>
+        <rect x="22" y="15" width="2" height="8" fill="#ec4899"/>
+        <!-- Legs -->
+        <rect x="12" y="25" width="3" height="7" fill="#1e3a8a"/>
+        <rect x="17" y="25" width="3" height="7" fill="#1e3a8a"/>
+        <!-- Shoes -->
+        <rect x="11" y="32" width="5" height="1" fill="#111"/>
+        <rect x="16" y="32" width="5" height="1" fill="#111"/>
+        <!-- Hair Details -->
+        <rect x="10" y="6" width="2" height="1" fill="#523a2f"/>
+        <rect x="20" y="6" width="2" height="1" fill="#523a2f"/>
+    </svg>`,
+    "Second Year": `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <!-- Hair Back -->
+        <rect x="9" y="2" width="14" height="12" fill="#3f2e26"/>
+        <!-- Hair Top -->
+        <rect x="11" y="1" width="10" height="3" fill="#3f2e26"/>
+        <!-- Face -->
+        <rect x="10" y="4" width="12" height="10" fill="#ffccaa"/>
+        <!-- Eyes -->
+        <rect x="12" y="7" width="2" height="2" fill="#111"/>
+        <rect x="18" y="7" width="2" height="2" fill="#111"/>
+        <!-- Smile -->
+        <rect x="13" y="10" width="6" height="1" fill="#111"/>
+        <!-- Body -->
+        <rect x="9" y="14" width="14" height="10" fill="#10b981"/>
+        <!-- Arms -->
+        <rect x="7" y="14" width="2" height="8" fill="#10b981"/>
+        <rect x="23" y="14" width="2" height="8" fill="#10b981"/>
+        <!-- Legs -->
+        <rect x="12" y="24" width="3" height="8" fill="#064e3b"/>
+        <rect x="17" y="24" width="3" height="8" fill="#064e3b"/>
+        <!-- Shoes -->
+        <rect x="11" y="32" width="5" height="1" fill="#111"/>
+        <rect x="16" y="32" width="5" height="1" fill="#111"/>
+        <!-- Hair Details -->
+        <rect x="12" y="3" width="2" height="1" fill="#523a2f"/>
+        <rect x="18" y="3" width="2" height="1" fill="#523a2f"/>
+    </svg>`,
+    "Third Year": `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <!-- Hair Back -->
+        <rect x="8" y="3" width="16" height="12" fill="#2d221e"/>
+        <!-- Hair Side -->
+        <rect x="7" y="5" width="2" height="10" fill="#2d221e"/>
+        <rect x="23" y="5" width="2" height="10" fill="#2d221e"/>
+        <!-- Face -->
+        <rect x="10" y="4" width="12" height="10" fill="#eddcd2"/>
+        <!-- Eyes -->
+        <rect x="12" y="7" width="3" height="2" fill="#000"/>
+        <rect x="17" y="7" width="3" height="2" fill="#000"/>
+        <!-- Body -->
+        <rect x="9" y="14" width="14" height="11" fill="#4b5563"/>
+        <!-- Arms -->
+        <rect x="7" y="14" width="2" height="8" fill="#4b5563"/>
+        <rect x="23" y="14" width="2" height="8" fill="#4b5563"/>
+        <!-- Legs -->
+        <rect x="12" y="25" width="3" height="7" fill="#1e293b"/>
+        <rect x="17" y="25" width="3" height="7" fill="#1e293b"/>
+        <!-- Shoes -->
+        <rect x="11" y="32" width="5" height="1" fill="#111"/>
+        <rect x="16" y="32" width="5" height="1" fill="#111"/>
+        <!-- Hair Details -->
+        <rect x="10" y="4" width="2" height="1" fill="#1f1916"/>
+        <rect x="20" y="4" width="2" height="1" fill="#1f1916"/>
+        <!-- Glasses -->
+        <rect x="11" y="7" width="5" height="2" fill="none" stroke="#4b5563" stroke-width="1"/>
+        <rect x="16" y="7" width="5" height="2" fill="none" stroke="#4b5563" stroke-width="1"/>
+        <rect x="15" y="8" width="2" height="1" fill="#4b5563"/>
+    </svg>`,
+    "Fourth Year": `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <!-- Hair Back -->
+        <rect x="8" y="3" width="16" height="12" fill="#5c4033"/>
+        <!-- Hair Side -->
+        <rect x="7" y="5" width="2" height="8" fill="#5c4033"/>
+        <rect x="23" y="5" width="2" height="8" fill="#5c4033"/>
+        <!-- Face -->
+        <rect x="10" y="4" width="12" height="10" fill="#ffccaa"/>
+        <!-- Eyes -->
+        <rect x="12" y="7" width="2" height="2" fill="#111"/>
+        <rect x="18" y="7" width="2" height="2" fill="#111"/>
+        <!-- Mouth -->
+        <rect x="14" y="10" width="4" height="1" fill="#111"/>
+        <!-- Headband -->
+        <rect x="9" y="3" width="14" height="2" fill="#1e1b4b"/>
+        <!-- Body -->
+        <rect x="9" y="14" width="14" height="13" fill="#4c1d95"/>
+        <!-- Arms -->
+        <rect x="7" y="14" width="2" height="8" fill="#4c1d95"/>
+        <rect x="23" y="14" width="2" height="8" fill="#4c1d95"/>
+        <!-- Legs -->
+        <rect x="12" y="27" width="3" height="5" fill="#1e1b4b"/>
+        <rect x="17" y="27" width="3" height="5" fill="#1e1b4b"/>
+        <!-- Shoes -->
+        <rect x="11" y="32" width="5" height="1" fill="#111"/>
+        <rect x="16" y="32" width="5" height="1" fill="#111"/>
+        <!-- Hair Details -->
+        <rect x="10" y="4" width="2" height="1" fill="#4a352b"/>
+        <rect x="20" y="4" width="2" height="1" fill="#4a352b"/>
+        <!-- Graduation Cap -->
+        <rect x="10" y="1" width="12" height="2" fill="#1e1b4b"/>
+        <rect x="12" y="0" width="8" height="1" fill="#1e1b4b"/>
+    </svg>`,
+  },
+};
+
+// Sleep State Sprites (Good Sleep)
+// ===== Enhanced Sleep State Sprites =====
+const sleepSpritesGood = {
+  "First Year": {
+    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Pillow -->
+      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
+      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
+      
+      <!-- Head -->
+      <rect x="6" y="14" width="6" height="6" fill="#ffccaa"/>
+      <!-- Hair -->
+      <rect x="6" y="14" width="6" height="2" fill="#5c4033"/>
+      <rect x="5" y="15" width="1" height="3" fill="#5c4033"/>
+      <rect x="12" y="15" width="1" height="3" fill="#5c4033"/>
+      
+      <!-- Closed eyes -->
+      <rect x="7" y="16" width="4" height="1" fill="#7a4d45"/>
+      
+      <!-- Smile -->
+      <rect x="8" y="18" width="2" height="1" fill="#7a4d45"/>
+      
+      <!-- Body (blanket) -->
+      <rect x="4" y="20" width="24" height="8" fill="#3b82f6"/>
+      <rect x="4" y="20" width="10" height="8" fill="#2f6ccc"/>
+      <rect x="18" y="20" width="10" height="8" fill="#4d96ff"/>
+      
+      <!-- Zzz bubbles -->
+      <rect x="14" y="12" width="2" height="1" fill="#fbbf24" opacity="0.8"/>
+      <rect x="16" y="10" width="3" height="1" fill="#fbbf24" opacity="0.6"/>
+      <rect x="20" y="8" width="4" height="1" fill="#fbbf24" opacity="0.4"/>
+    </svg>`,
+    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Pillow -->
+      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
+      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
+      
+      <!-- Head -->
+      <rect x="6" y="14" width="6" height="6" fill="#ffccaa"/>
+      <!-- Hair -->
+      <rect x="5" y="14" width="8" height="3" fill="#3f2e26"/>
+      <rect x="4" y="15" width="1" height="3" fill="#3f2e26"/>
+      <rect x="13" y="15" width="1" height="3" fill="#3f2e26"/>
+      
+      <!-- Closed eyes -->
+      <rect x="7" y="16" width="4" height="1" fill="#7a4d45"/>
+      
+      <!-- Blush -->
+      <rect x="6" y="18" width="1" height="1" fill="#ff99cc" opacity="0.7"/>
+      <rect x="11" y="18" width="1" height="1" fill="#ff99cc" opacity="0.7"/>
+      
+      <!-- Body (blanket) -->
+      <rect x="4" y="20" width="24" height="8" fill="#ec4899"/>
+      <rect x="4" y="20" width="10" height="8" fill="#db2777"/>
+      <rect x="18" y="20" width="10" height="8" fill="#f472b6"/>
+      
+      <!-- Zzz bubbles -->
+      <rect x="14" y="12" width="2" height="1" fill="#fbbf24" opacity="0.8"/>
+      <rect x="16" y="10" width="3" height="1" fill="#fbbf24" opacity="0.6"/>
+      <rect x="20" y="8" width="4" height="1" fill="#fbbf24" opacity="0.4"/>
+    </svg>`,
+  },
+  "Second Year": {
+    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Pillow -->
+      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
+      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
+      
+      <!-- Head -->
+      <rect x="6" y="14" width="6" height="6" fill="#ffccaa"/>
+      <!-- Hair -->
+      <rect x="6" y="14" width="6" height="2" fill="#3f2e26"/>
+      <rect x="5" y="15" width="1" height="3" fill="#3f2e26"/>
+      <rect x="12" y="15" width="1" height="3" fill="#3f2e26"/>
+      
+      <!-- Closed eyes -->
+      <rect x="7" y="16" width="4" height="1" fill="#7a4d45"/>
+      
+      <!-- Smile -->
+      <rect x="8" y="18" width="2" height="1" fill="#7a4d45"/>
+      
+      <!-- Body (blanket) -->
+      <rect x="4" y="20" width="24" height="8" fill="#10b981"/>
+      <rect x="4" y="20" width="10" height="8" fill="#0c8667"/>
+      <rect x="18" y="20" width="10" height="8" fill="#15d49a"/>
+      
+      <!-- Sleep mask -->
+      <rect x="5" y="15" width="8" height="2" fill="#1e293b"/>
+      <rect x="6" y="15" width="6" height="1" fill="#334155"/>
+    </svg>`,
+    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Pillow -->
+      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
+      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
+      
+      <!-- Head -->
+      <rect x="6" y="14" width="6" height="6" fill="#ffccaa"/>
+      <!-- Hair -->
+      <rect x="5" y="13" width="8" height="4" fill="#3f2e26"/>
+      <rect x="4" y="15" width="1" height="3" fill="#3f2e26"/>
+      <rect x="13" y="15" width="1" height="3" fill="#3f2e26"/>
+      
+      <!-- Closed eyes -->
+      <rect x="7" y="16" width="4" height="1" fill="#7a4d45"/>
+      
+      <!-- Smile -->
+      <rect x="8" y="18" width="2" height="1" fill="#7a4d45"/>
+      
+      <!-- Body (blanket) -->
+      <rect x="4" y="20" width="24" height="8" fill="#10b981"/>
+      <rect x="4" y="20" width="10" height="8" fill="#0c8667"/>
+      <rect x="18" y="20" width="10" height="8" fill="#15d49a"/>
+      
+      <!-- Teddy bear -->
+      <rect x="20" y="14" width="4" height="3" fill="#92400e"/>
+      <rect x="21" y="14" width="2" height="1" fill="#000"/>
+    </svg>`,
+  },
+  "Third Year": {
+    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Pillow -->
+      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
+      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
+      
+      <!-- Head -->
+      <rect x="6" y="14" width="6" height="6" fill="#eddcd2"/>
+      <!-- Hair -->
+      <rect x="6" y="14" width="6" height="2" fill="#2d221e"/>
+      <rect x="5" y="15" width="1" height="3" fill="#2d221e"/>
+      <rect x="12" y="15" width="1" height="3" fill="#2d221e"/>
+      
+      <!-- Closed eyes -->
+      <rect x="7" y="16" width="4" height="1" fill="#754c47"/>
+      
+      <!-- Body (blanket) -->
+      <rect x="4" y="20" width="24" height="8" fill="#4b5563"/>
+      <rect x="4" y="20" width="10" height="8" fill="#354556"/>
+      <rect x="18" y="20" width="10" height="8" fill="#566374"/>
+      
+      <!-- Glasses on nightstand -->
+      <rect x="22" y="16" width="6" height="2" fill="none" stroke="#4b5563" stroke-width="1"/>
+      <rect x="28" y="16" width="1" height="1" fill="#4b5563"/>
+    </svg>`,
+    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Pillow -->
+      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
+      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
+      
+      <!-- Head -->
+      <rect x="6" y="14" width="6" height="6" fill="#eddcd2"/>
+      <!-- Hair -->
+      <rect x="5" y="13" width="8" height="4" fill="#2d221e"/>
+      <rect x="4" y="15" width="1" height="3" fill="#2d221e"/>
+      <rect x="13" y="15" width="1" height="3" fill="#2d221e"/>
+      
+      <!-- Closed eyes -->
+      <rect x="7" y="16" width="4" height="1" fill="#754c47"/>
+      
+      <!-- Body (blanket) -->
+      <rect x="4" y="20" width="24" height="8" fill="#4b5563"/>
+      <rect x="4" y="20" width="10" height="8" fill="#354556"/>
+      <rect x="18" y="20" width="10" height="8" fill="#566374"/>
+      
+      <!-- Book on nightstand -->
+      <rect x="22" y="16" width="4" height="5" fill="#7f1d1d"/>
+      <rect x="23" y="16" width="2" height="1" fill="#fef3c7"/>
+    </svg>`,
+  },
+  "Fourth Year": {
+    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Pillow -->
+      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
+      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
+      
+      <!-- Head -->
+      <rect x="6" y="14" width="6" height="6" fill="#ffccaa"/>
+      <!-- Hair -->
+      <rect x="6" y="14" width="6" height="2" fill="#1a1839"/>
+      <rect x="5" y="15" width="1" height="3" fill="#1a1839"/>
+      <rect x="12" y="15" width="1" height="3" fill="#1a1839"/>
+      
+      <!-- Closed eyes -->
+      <rect x="7" y="16" width="4" height="1" fill="#7a4d45"/>
+      
+      <!-- Smile -->
+      <rect x="8" y="18" width="2" height="1" fill="#7a4d45"/>
+      
+      <!-- Body (blanket) -->
+      <rect x="4" y="20" width="24" height="8" fill="#4c1d95"/>
+      <rect x="4" y="20" width="10" height="8" fill="#3c1878"/>
+      <rect x="18" y="20" width="10" height="8" fill="#5d25b0"/>
+      
+      <!-- Graduation cap on chair -->
+      <rect x="22" y="14" width="8" height="2" fill="#1e1b4b"/>
+      <rect x="24" y="12" width="4" height="2" fill="#1e1b4b"/>
+    </svg>`,
+    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Pillow -->
+      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
+      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
+      
+      <!-- Head -->
+      <rect x="6" y="14" width="6" height="6" fill="#ffccaa"/>
+      <!-- Hair -->
+      <rect x="5" y="13" width="8" height="4" fill="#5c4033"/>
+      <rect x="4" y="15" width="1" height="3" fill="#5c4033"/>
+      <rect x="13" y="15" width="1" height="3" fill="#5c4033"/>
+      
+      <!-- Headband -->
+      <rect x="5" y="15" width="8" height="1" fill="#1e1b4b"/>
+      
+      <!-- Closed eyes -->
+      <rect x="7" y="16" width="4" height="1" fill="#7a4d45"/>
+      
+      <!-- Smile -->
+      <rect x="8" y="18" width="2" height="1" fill="#7a4d45"/>
+      
+      <!-- Body (blanket) -->
+      <rect x="4" y="20" width="24" height="8" fill="#4c1d95"/>
+      <rect x="4" y="20" width="10" height="8" fill="#3c1878"/>
+      <rect x="18" y="20" width="10" height="8" fill="#5d25b0"/>
+      
+      <!-- Alarm clock -->
+      <rect x="22" y="14" width="6" height="4" fill="#1e293b"/>
+      <rect x="24" y="15" width="2" height="2" fill="#22c55e"/>
+    </svg>`,
+  },
+};
+
+const sleepSpritesPoor = {
+  "First Year": {
+    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Messy bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Tossed pillow -->
+      <rect x="18" y="14" width="8" height="4" fill="#f1f5f9" transform="rotate(15 22 16)"/>
+      
+      <!-- Head - restless -->
+      <rect x="8" y="14" width="6" height="6" fill="#ffccaa"/>
+      <!-- Hair -->
+      <rect x="8" y="14" width="6" height="2" fill="#5c4033"/>
+      <rect x="7" y="15" width="1" height="3" fill="#5c4033"/>
+      <rect x="14" y="15" width="1" height="3" fill="#5c4033"/>
+      
+      <!-- Worried eyes -->
+      <rect x="9" y="16" width="1" height="1" fill="#000"/>
+      <rect x="12" y="16" width="1" height="1" fill="#000"/>
+      
+      <!-- Frown -->
+      <rect x="10" y="18" width="3" height="1" fill="#7a4d45"/>
+      
+      <!-- Body (tangled blanket) -->
+      <rect x="4" y="20" width="20" height="8" fill="#3b82f6"/>
+      <rect x="4" y="20" width="8" height="8" fill="#2f6ccc"/>
+      <rect x="16" y="20" width="8" height="8" fill="#4d96ff"/>
+      
+      <!-- Sweat drops -->
+      <rect x="10" y="13" width="1" height="2" fill="#60a5fa"/>
+      <rect x="13" y="12" width="1" height="2" fill="#60a5fa"/>
+      
+      <!-- Phone glowing -->
+      <rect x="24" y="16" width="4" height="6" fill="#1e293b"/>
+      <rect x="25" y="17" width="2" height="4" fill="#3b82f6" opacity="0.7"/>
+    </svg>`,
+    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Messy bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Tossed pillow -->
+      <rect x="18" y="14" width="8" height="4" fill="#f1f5f9" transform="rotate(15 22 16)"/>
+      
+      <!-- Head - restless -->
+      <rect x="8" y="14" width="6" height="6" fill="#ffccaa"/>
+      <!-- Hair -->
+      <rect x="7" y="14" width="8" height="3" fill="#3f2e26"/>
+      <rect x="6" y="15" width="1" height="3" fill="#3f2e26"/>
+      <rect x="15" y="15" width="1" height="3" fill="#3f2e26"/>
+      
+      <!-- Worried eyes -->
+      <rect x="9" y="16" width="1" height="1" fill="#000"/>
+      <rect x="12" y="16" width="1" height="1" fill="#000"/>
+      
+      <!-- Frown -->
+      <rect x="10" y="18" width="3" height="1" fill="#7a4d45"/>
+      
+      <!-- Body (tangled blanket) -->
+      <rect x="4" y="20" width="20" height="8" fill="#ec4899"/>
+      <rect x="4" y="20" width="8" height="8" fill="#db2777"/>
+      <rect x="16" y="20" width="8" height="8" fill="#f472b6"/>
+      
+      <!-- Sweat drops -->
+      <rect x="10" y="13" width="1" height="2" fill="#60a5fa"/>
+      <rect x="13" y="12" width="1" height="2" fill="#60a5fa"/>
+      
+      <!-- Laptop glowing -->
+      <rect x="22" y="16" width="8" height="4" fill="#1e293b"/>
+      <rect x="23" y="17" width="6" height="2" fill="#3b82f6" opacity="0.7"/>
+    </svg>`,
+  },
+  "Second Year": {
+    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Messy bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Head - half awake -->
+      <rect x="10" y="14" width="6" height="6" fill="#ffccaa"/>
+      <!-- Hair -->
+      <rect x="10" y="14" width="6" height="2" fill="#3f2e26"/>
+      <rect x="9" y="15" width="1" height="3" fill="#3f2e26"/>
+      <rect x="16" y="15" width="1" height="3" fill="#3f2e26"/>
+      
+      <!-- Tired eyes (one open, one closed) -->
+      <rect x="11" y="16" width="1" height="1" fill="#000"/>
+      <rect x="13" y="16" width="2" height="1" fill="#7a4d45"/>
+      
+      <!-- Body (sitting up) -->
+      <rect x="8" y="20" width="16" height="8" fill="#10b981"/>
+      <rect x="8" y="20" width="6" height="8" fill="#0c8667"/>
+      <rect x="18" y="20" width="6" height="8" fill="#15d49a"/>
+      
+      <!-- Coffee cup -->
+      <rect x="24" y="16" width="3" height="4" fill="#78350f"/>
+      <rect x="25" y="15" width="1" height="1" fill="#fbbf24"/>
+      
+      <!-- Dark circles -->
+      <rect x="10" y="16" width="1" height="1" fill="#4b5563" opacity="0.5"/>
+    </svg>`,
+    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Messy bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Head - half awake -->
+      <rect x="10" y="14" width="6" height="6" fill="#ffccaa"/>
+      <!-- Hair -->
+      <rect x="9" y="13" width="8" height="4" fill="#3f2e26"/>
+      <rect x="8" y="15" width="1" height="3" fill="#3f2e26"/>
+      <rect x="17" y="15" width="1" height="3" fill="#3f2e26"/>
+      
+      <!-- Tired eyes (one open, one closed) -->
+      <rect x="11" y="16" width="1" height="1" fill="#000"/>
+      <rect x="13" y="16" width="2" height="1" fill="#7a4d45"/>
+      
+      <!-- Body (sitting up) -->
+      <rect x="8" y="20" width="16" height="8" fill="#10b981"/>
+      <rect x="8" y="20" width="6" height="8" fill="#0c8667"/>
+      <rect x="18" y="20" width="6" height="8" fill="#15d49a"/>
+      
+      <!-- Textbook -->
+      <rect x="22" y="16" width="6" height="4" fill="#7f1d1d"/>
+      <rect x="23" y="17" width="4" height="2" fill="#fef3c7"/>
+      
+      <!-- Dark circles -->
+      <rect x="10" y="16" width="1" height="1" fill="#4b5563" opacity="0.5"/>
+    </svg>`,
+  },
+  "Third Year": {
+    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Messy bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Head - exhausted -->
+      <rect x="12" y="14" width="6" height="6" fill="#eddcd2"/>
+      <!-- Hair -->
+      <rect x="12" y="14" width="6" height="2" fill="#2d221e"/>
+      <rect x="11" y="15" width="1" height="3" fill="#2d221e"/>
+      <rect x="18" y="15" width="1" height="3" fill="#2d221e"/>
+      
+      <!-- Dark circles under eyes -->
+      <rect x="13" y="17" width="4" height="1" fill="#4b5563" opacity="0.7"/>
+      
+      <!-- Open tired eyes -->
+      <rect x="13" y="16" width="1" height="1" fill="#000"/>
+      <rect x="16" y="16" width="1" height="1" fill="#000"/>
+      
+      <!-- Body (blanket half off) -->
+      <rect x="8" y="20" width="18" height="8" fill="#4b5563"/>
+      <rect x="8" y="20" width="8" height="8" fill="#354556"/>
+      <rect x="20" y="20" width="6" height="8" fill="#566374"/>
+      
+      <!-- Coffee pot -->
+      <rect x="24" y="14" width="4" height="6" fill="#78350f"/>
+      <rect x="25" y="13" width="2" height="1" fill="#fbbf24"/>
+    </svg>`,
+    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Messy bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Head - exhausted with glasses -->
+      <rect x="12" y="14" width="6" height="6" fill="#eddcd2"/>
+      <!-- Hair -->
+      <rect x="11" y="13" width="8" height="4" fill="#2d221e"/>
+      <rect x="10" y="15" width="1" height="3" fill="#2d221e"/>
+      <rect x="19" y="15" width="1" height="3" fill="#2d221e"/>
+      
+      <!-- Glasses -->
+      <rect x="12" y="16" width="2" height="1" fill="none" stroke="#4b5563" stroke-width="1"/>
+      <rect x="15" y="16" width="2" height="1" fill="none" stroke="#4b5563" stroke-width="1"/>
+      <rect x="14" y="16" width="1" height="1" fill="#4b5563"/>
+      
+      <!-- Dark circles -->
+      <rect x="12" y="17" width="1" height="1" fill="#4b5563" opacity="0.7"/>
+      <rect x="17" y="17" width="1" height="1" fill="#4b5563" opacity="0.7"/>
+      
+      <!-- Body (blanket half off) -->
+      <rect x="8" y="20" width="18" height="8" fill="#4b5563"/>
+      <rect x="8" y="20" width="8" height="8" fill="#354556"/>
+      <rect x="20" y="20" width="6" height="8" fill="#566374"/>
+      
+      <!-- Multiple books -->
+      <rect x="22" y="14" width="3" height="4" fill="#7f1d1d"/>
+      <rect x="26" y="15" width="3" height="4" fill="#1e3a8a"/>
+    </svg>`,
+  },
+  "Fourth Year": {
+    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Messy bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Head - stressed -->
+      <rect x="14" y="14" width="6" height="6" fill="#ffccaa"/>
+      <!-- Hair -->
+      <rect x="14" y="14" width="6" height="2" fill="#1a1839"/>
+      <rect x="13" y="15" width="1" height="3" fill="#1a1839"/>
+      <rect x="20" y="15" width="1" height="3" fill="#1a1839"/>
+      
+      <!-- Wide awake stressed eyes -->
+      <rect x="15" y="16" width="1" height="1" fill="#000"/>
+      <rect x="18" y="16" width="1" height="1" fill="#000"/>
+      
+      <!-- Open mouth -->
+      <rect x="16" y="18" width="2" height="1" fill="#7a4d45"/>
+      
+      <!-- Body (sitting up stressed) -->
+      <rect x="10" y="20" width="14" height="8" fill="#4c1d95"/>
+      <rect x="10" y="20" width="6" height="8" fill="#3c1878"/>
+      <rect x="20" y="20" width="4" height="8" fill="#5d25b0"/>
+      
+      <!-- Thesis papers everywhere -->
+      <rect x="4" y="14" width="6" height="4" fill="#f8fafc"/>
+      <rect x="24" y="12" width="4" height="6" fill="#f8fafc"/>
+      <rect x="5" y="15" width="4" height="2" fill="#cbd5e1"/>
+    </svg>`,
+    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <!-- Messy bed -->
+      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
+      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
+      
+      <!-- Head - stressed with headband -->
+      <rect x="14" y="14" width="6" height="6" fill="#ffccaa"/>
+      <!-- Hair -->
+      <rect x="13" y="13" width="8" height="4" fill="#5c4033"/>
+      <rect x="12" y="15" width="1" height="3" fill="#5c4033"/>
+      <rect x="21" y="15" width="1" height="3" fill="#5c4033"/>
+      
+      <!-- Headband -->
+      <rect x="13" y="15" width="8" height="1" fill="#1e1b4b"/>
+      
+      <!-- Wide awake stressed eyes -->
+      <rect x="15" y="16" width="1" height="1" fill="#000"/>
+      <rect x="18" y="16" width="1" height="1" fill="#000"/>
+      
+      <!-- Open mouth -->
+      <rect x="16" y="18" width="2" height="1" fill="#7a4d45"/>
+      
+      <!-- Body (sitting up stressed) -->
+      <rect x="10" y="20" width="14" height="8" fill="#4c1d95"/>
+      <rect x="10" y="20" width="6" height="8" fill="#3c1878"/>
+      <rect x="20" y="20" width="4" height="8" fill="#5d25b0"/>
+      
+      <!-- Alarm clock showing late hour -->
+      <rect x="24" y="14" width="6" height="4" fill="#1e293b"/>
+      <rect x="26" y="15" width="2" height="2" fill="#ef4444"/>
+      
+      <!-- Graduation cap thrown aside -->
+      <rect x="4" y="12" width="8" height="2" fill="#1e1b4b" transform="rotate(-15 8 13)"/>
+    </svg>`,
+  },
+};
+
 // ===== DOM Elements =====
 const elements = {
   prevBtn: document.getElementById("prevBtn"),
@@ -74,6 +868,29 @@ const dialogues = {
   poor_sleep: "Hmm, concerning...",
 };
 
+// ===== Sprite Switching Function =====
+function updateSprite() {
+  const sex = inputs.sex.value;
+  const level = inputs.academic_level.value;
+
+  // Get the appropriate sprite
+  const gender = sex === "Male" ? "male" : "female";
+  const spriteHTML = sprites[gender][level];
+
+  // Update the visible avatar
+  if (sex === "Male") {
+    elements.avatarMale.innerHTML = spriteHTML;
+    elements.avatarMale.classList.remove("hidden");
+    elements.avatarFemale.classList.add("hidden");
+  } else {
+    elements.avatarFemale.innerHTML = spriteHTML;
+    elements.avatarFemale.classList.remove("hidden");
+    elements.avatarMale.classList.add("hidden");
+  }
+
+  console.log(`Sprite updated: ${gender} - ${level}`);
+}
+
 // ===== Navigation Functions =====
 function updateStepVisibility() {
   // Hide all steps
@@ -128,14 +945,8 @@ function updateAvatar() {
   const level = inputs.academic_level.value;
   const stress = inputs.stress_level.value;
 
-  // Toggle avatar gender
-  if (sex === "Male") {
-    elements.avatarMale.classList.remove("hidden");
-    elements.avatarFemale.classList.add("hidden");
-  } else {
-    elements.avatarMale.classList.add("hidden");
-    elements.avatarFemale.classList.remove("hidden");
-  }
+  // Update sprite based on selections
+  updateSprite();
 
   const currentAvatar =
     sex === "Male" ? elements.avatarMale : elements.avatarFemale;
@@ -305,6 +1116,8 @@ async function makePrediction() {
 function displayResult(result) {
   const isGoodSleep = result.prediction === 1;
   const confidence = Math.round(result.confidence * 100);
+  const level = inputs.academic_level.value;
+  const sex = inputs.sex.value;
 
   // Update result text
   elements.predictionResult.innerText = result.prediction_text.toUpperCase();
@@ -326,12 +1139,47 @@ function displayResult(result) {
     isGoodSleep ? dialogues.good_sleep : dialogues.poor_sleep
   );
 
+  // Show sleep state sprite in result
+  showSleepSprite(isGoodSleep, level, sex);
+
   // Show result overlay
   elements.resultOverlay.classList.remove("hidden");
   elements.resultOverlay.classList.add("flex");
 
   // Play success sound (optional)
   playSound(isGoodSleep ? "success" : "warning");
+}
+
+function showSleepSprite(isGoodSleep, level, sex) {
+  // Get the appropriate sleep sprite
+  let sleepSpriteHTML;
+
+  const gender = sex === "Male" ? "male" : "female";
+
+  if (isGoodSleep) {
+    // Good sleep sprites - all levels now have gender-specific sprites
+    sleepSpriteHTML = sleepSpritesGood[level][gender];
+  } else {
+    // Poor sleep sprites - all levels now have gender-specific sprites
+    sleepSpriteHTML = sleepSpritesPoor[level][gender];
+  }
+
+  // Create or update sleep sprite container in result overlay
+  let sleepSpriteContainer = document.getElementById("resultSleepSprite");
+  if (!sleepSpriteContainer) {
+    sleepSpriteContainer = document.createElement("div");
+    sleepSpriteContainer.id = "resultSleepSprite";
+    sleepSpriteContainer.className = "w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-4";
+
+    // Insert before the prediction text
+    const resultBox = elements.resultOverlay.querySelector(".border-2");
+    const predictionText =
+      elements.resultOverlay.querySelector("#predictionResult");
+    resultBox.insertBefore(sleepSpriteContainer, predictionText);
+  }
+
+  sleepSpriteContainer.innerHTML =
+    sleepSpriteHTML || '<div class="text-red-500">Sprite not found</div>';
 }
 
 // ===== Sound Effects =====
@@ -520,6 +1368,7 @@ inputs.study_end_time.addEventListener("change", updateStudyTimeDisplay);
 
 // ===== Initialize =====
 updateStepVisibility();
+updateSprite(); // Initialize sprite on page load
 updateAvatar();
 updateStudyTimeDisplay(); // Initialize time display
 
