@@ -54,12 +54,12 @@
     </script>
   </head>
   <body
-    class="font-pixel text-white min-h-screen flex items-center justify-center p-2 sm:p-4"
+    class="font-pixel text-white min-h-screen flex flex-col items-center justify-start lg:justify-center p-2 sm:p-4 gap-4 overflow-x-hidden"
   >
     <!-- Music Control Button -->
     <button
       id="musicToggle"
-      class="fixed top-4 right-4 z-[100] pixel-button nes-container bg-rpg-blue p-3 text-[10px] hover:bg-opacity-80 flex items-center gap-2 cursor-pointer"
+      class="fixed top-4 right-2 sm:right-4 z-[100] pixel-button nes-container bg-rpg-blue px-2 py-2 sm:p-3 text-[8px] sm:text-[10px] hover:bg-opacity-80 flex items-center gap-1 sm:gap-2 cursor-pointer"
       title="Click to toggle background music"
     >
       <span id="musicIcon">🔇</span>
@@ -68,10 +68,10 @@
 
     <!-- Main Game Container -->
     <div
-      class="flex flex-col lg:flex-row gap-8 w-full max-w-6xl items-end justify-center relative z-20"
+      class="flex flex-col lg:flex-row gap-6 sm:gap-8 w-full max-w-6xl items-stretch lg:items-end justify-center relative z-20"
     >
       <!-- LEFT: Stats Panel -->
-      <div class="hidden lg:block w-64 space-y-4">
+      <div class="w-full lg:w-64 space-y-4 order-3 lg:order-1">
         <div class="nes-container bg-rpg-blue p-4">
           <h3 class="text-xs text-rpg-gold mb-4">PARTY STATUS</h3>
 
@@ -111,7 +111,7 @@
 
       <!-- CENTER: The RPG Dialogue Box (The Form) -->
       <div
-        class="nes-container bg-rpg-blue w-full lg:w-2/3 p-4 sm:p-6 relative order-2 lg:order-1"
+        class="nes-container bg-rpg-blue w-full lg:w-2/3 p-4 sm:p-6 relative order-2"
       >
         <!-- Header with Step Indicator -->
         <div class="border-b-4 border-white pb-4 mb-6">
@@ -135,7 +135,7 @@
         <form id="sleepForm" onsubmit="event.preventDefault();">
           <div
             id="formContainer"
-            class="space-y-6 h-64 sm:h-80 lg:h-96 overflow-y-auto pr-2"
+            class="space-y-6 max-h-[65vh] sm:h-80 lg:h-96 overflow-y-auto pr-1 sm:pr-2"
           >
             <!-- Step 1: Character Creation -->
             <div id="step-1" class="step active space-y-6">
@@ -425,7 +425,7 @@
         <!-- Loading Overlay -->
         <div
           id="loadingOverlay"
-          class="absolute inset-0 bg-black/95 z-40 hidden flex-col items-center justify-center"
+          class="absolute inset-0 bg-black/95 z-40 hidden flex-col items-center justify-center overflow-y-auto"
         >
           <div class="text-rpg-gold text-sm sm:text-lg mb-4 animate-pulse">
             CASTING SPELL...
@@ -446,7 +446,7 @@
         <!-- Result Overlay -->
         <div
           id="resultOverlay"
-          class="absolute inset-0 bg-black/95 z-50 flex-col items-center justify-center p-4 text-center hidden"
+          class="absolute inset-0 bg-black/95 z-50 flex-col items-center justify-center p-4 text-center hidden overflow-y-auto"
         >
           <h2
             class="text-sm sm:text-lg text-rpg-gold mb-6 uppercase animate-bounce-slow"
@@ -460,7 +460,7 @@
             <p class="text-xs text-gray-400 mb-3">PREDICTION:</p>
             <div
               id="resultSpriteSlot"
-              class="w-32 h-32 sm:w-40 sm:h-40 mx-auto mb-4 bg-black/30 border-2 border-white flex items-center justify-center rounded-lg overflow-hidden"
+              class="w-28 h-28 sm:w-40 sm:h-40 mx-auto mb-4 bg-black/30 border-2 border-white flex items-center justify-center rounded-lg overflow-hidden"
             >
               <span class="text-[8px] text-gray-500 text-center px-2">
                 Sprite appears here after prediction
@@ -514,7 +514,7 @@
         <!-- Avatar Container -->
         <div
           id="avatarContainer"
-          class="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 relative flex items-end justify-center"
+          class="w-40 h-40 sm:w-64 sm:h-64 lg:w-80 lg:h-80 relative flex items-end justify-center"
         >
           <!-- MALE AVATAR -->
           <svg

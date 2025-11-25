@@ -217,3 +217,35 @@ input:focus {
     opacity: 0;
   }
 }
+
+@media (max-width: 640px) {
+  body {
+    align-items: flex-start;
+  }
+
+  #formContainer {
+    max-height: 65vh;
+  }
+
+  #avatarDialogue {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  #avatarContainer {
+    width: 10rem;
+    height: 10rem;
+  }
+
+  #musicToggle {
+    transform: scale(0.9);
+  }
+
+  #resultOverlay .border-4 {
+    padding: 1.25rem;
+  }
+
+  #resultOverlay h2 {
+    font-size: 0.85rem;
+  }
+}
