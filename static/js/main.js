@@ -148,524 +148,106 @@ Object.keys(spriteConfigs).forEach((gender) => {
   });
 });
 
-// Sleep State Sprites (Good Sleep)
-// ===== Enhanced Sleep State Sprites =====
-const sleepSpritesGood = {
-  "First Year": {
-    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Pillow -->
-      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
-      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
-      
-      <!-- Head -->
-      <rect x="6" y="14" width="6" height="6" fill="#ffccaa"/>
-      <!-- Hair -->
-      <rect x="6" y="14" width="6" height="2" fill="#5c4033"/>
-      <rect x="5" y="15" width="1" height="3" fill="#5c4033"/>
-      <rect x="12" y="15" width="1" height="3" fill="#5c4033"/>
-      
-      <!-- Closed eyes -->
-      <rect x="7" y="16" width="4" height="1" fill="#7a4d45"/>
-      
-      <!-- Smile -->
-      <rect x="8" y="18" width="2" height="1" fill="#7a4d45"/>
-      
-      <!-- Body (blanket) -->
-      <rect x="4" y="20" width="24" height="8" fill="#3b82f6"/>
-      <rect x="4" y="20" width="10" height="8" fill="#2f6ccc"/>
-      <rect x="18" y="20" width="10" height="8" fill="#4d96ff"/>
-      
-      <!-- Zzz bubbles -->
-      <rect x="14" y="12" width="2" height="1" fill="#fbbf24" opacity="0.8"/>
-      <rect x="16" y="10" width="3" height="1" fill="#fbbf24" opacity="0.6"/>
-      <rect x="20" y="8" width="4" height="1" fill="#fbbf24" opacity="0.4"/>
-    </svg>`,
-    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Pillow -->
-      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
-      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
-      
-      <!-- Head -->
-      <rect x="6" y="14" width="6" height="6" fill="#ffccaa"/>
-      <!-- Hair -->
-      <rect x="5" y="14" width="8" height="3" fill="#3f2e26"/>
-      <rect x="4" y="15" width="1" height="3" fill="#3f2e26"/>
-      <rect x="13" y="15" width="1" height="3" fill="#3f2e26"/>
-      
-      <!-- Closed eyes -->
-      <rect x="7" y="16" width="4" height="1" fill="#7a4d45"/>
-      
-      <!-- Blush -->
-      <rect x="6" y="18" width="1" height="1" fill="#ff99cc" opacity="0.7"/>
-      <rect x="11" y="18" width="1" height="1" fill="#ff99cc" opacity="0.7"/>
-      
-      <!-- Body (blanket) -->
-      <rect x="4" y="20" width="24" height="8" fill="#ec4899"/>
-      <rect x="4" y="20" width="10" height="8" fill="#db2777"/>
-      <rect x="18" y="20" width="10" height="8" fill="#f472b6"/>
-      
-      <!-- Zzz bubbles -->
-      <rect x="14" y="12" width="2" height="1" fill="#fbbf24" opacity="0.8"/>
-      <rect x="16" y="10" width="3" height="1" fill="#fbbf24" opacity="0.6"/>
-      <rect x="20" y="8" width="4" height="1" fill="#fbbf24" opacity="0.4"/>
-    </svg>`,
-  },
-  "Second Year": {
-    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Pillow -->
-      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
-      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
-      
-      <!-- Head -->
-      <rect x="6" y="14" width="6" height="6" fill="#ffccaa"/>
-      <!-- Hair -->
-      <rect x="6" y="14" width="6" height="2" fill="#3f2e26"/>
-      <rect x="5" y="15" width="1" height="3" fill="#3f2e26"/>
-      <rect x="12" y="15" width="1" height="3" fill="#3f2e26"/>
-      
-      <!-- Closed eyes -->
-      <rect x="7" y="16" width="4" height="1" fill="#7a4d45"/>
-      
-      <!-- Smile -->
-      <rect x="8" y="18" width="2" height="1" fill="#7a4d45"/>
-      
-      <!-- Body (blanket) -->
-      <rect x="4" y="20" width="24" height="8" fill="#10b981"/>
-      <rect x="4" y="20" width="10" height="8" fill="#0c8667"/>
-      <rect x="18" y="20" width="10" height="8" fill="#15d49a"/>
-      
-      <!-- Sleep mask -->
-      <rect x="5" y="15" width="8" height="2" fill="#1e293b"/>
-      <rect x="6" y="15" width="6" height="1" fill="#334155"/>
-    </svg>`,
-    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Pillow -->
-      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
-      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
-      
-      <!-- Head -->
-      <rect x="6" y="14" width="6" height="6" fill="#ffccaa"/>
-      <!-- Hair -->
-      <rect x="5" y="13" width="8" height="4" fill="#3f2e26"/>
-      <rect x="4" y="15" width="1" height="3" fill="#3f2e26"/>
-      <rect x="13" y="15" width="1" height="3" fill="#3f2e26"/>
-      
-      <!-- Closed eyes -->
-      <rect x="7" y="16" width="4" height="1" fill="#7a4d45"/>
-      
-      <!-- Smile -->
-      <rect x="8" y="18" width="2" height="1" fill="#7a4d45"/>
-      
-      <!-- Body (blanket) -->
-      <rect x="4" y="20" width="24" height="8" fill="#10b981"/>
-      <rect x="4" y="20" width="10" height="8" fill="#0c8667"/>
-      <rect x="18" y="20" width="10" height="8" fill="#15d49a"/>
-      
-      <!-- Teddy bear -->
-      <rect x="20" y="14" width="4" height="3" fill="#92400e"/>
-      <rect x="21" y="14" width="2" height="1" fill="#000"/>
-    </svg>`,
-  },
-  "Third Year": {
-    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Pillow -->
-      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
-      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
-      
-      <!-- Head -->
-      <rect x="6" y="14" width="6" height="6" fill="#eddcd2"/>
-      <!-- Hair -->
-      <rect x="6" y="14" width="6" height="2" fill="#2d221e"/>
-      <rect x="5" y="15" width="1" height="3" fill="#2d221e"/>
-      <rect x="12" y="15" width="1" height="3" fill="#2d221e"/>
-      
-      <!-- Closed eyes -->
-      <rect x="7" y="16" width="4" height="1" fill="#754c47"/>
-      
-      <!-- Body (blanket) -->
-      <rect x="4" y="20" width="24" height="8" fill="#4b5563"/>
-      <rect x="4" y="20" width="10" height="8" fill="#354556"/>
-      <rect x="18" y="20" width="10" height="8" fill="#566374"/>
-      
-      <!-- Glasses on nightstand -->
-      <rect x="22" y="16" width="6" height="2" fill="none" stroke="#4b5563" stroke-width="1"/>
-      <rect x="28" y="16" width="1" height="1" fill="#4b5563"/>
-    </svg>`,
-    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Pillow -->
-      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
-      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
-      
-      <!-- Head -->
-      <rect x="6" y="14" width="6" height="6" fill="#eddcd2"/>
-      <!-- Hair -->
-      <rect x="5" y="13" width="8" height="4" fill="#2d221e"/>
-      <rect x="4" y="15" width="1" height="3" fill="#2d221e"/>
-      <rect x="13" y="15" width="1" height="3" fill="#2d221e"/>
-      
-      <!-- Closed eyes -->
-      <rect x="7" y="16" width="4" height="1" fill="#754c47"/>
-      
-      <!-- Body (blanket) -->
-      <rect x="4" y="20" width="24" height="8" fill="#4b5563"/>
-      <rect x="4" y="20" width="10" height="8" fill="#354556"/>
-      <rect x="18" y="20" width="10" height="8" fill="#566374"/>
-      
-      <!-- Book on nightstand -->
-      <rect x="22" y="16" width="4" height="5" fill="#7f1d1d"/>
-      <rect x="23" y="16" width="2" height="1" fill="#fef3c7"/>
-    </svg>`,
-  },
-  "Fourth Year": {
-    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Pillow -->
-      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
-      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
-      
-      <!-- Head -->
-      <rect x="6" y="14" width="6" height="6" fill="#ffccaa"/>
-      <!-- Hair -->
-      <rect x="6" y="14" width="6" height="2" fill="#1a1839"/>
-      <rect x="5" y="15" width="1" height="3" fill="#1a1839"/>
-      <rect x="12" y="15" width="1" height="3" fill="#1a1839"/>
-      
-      <!-- Closed eyes -->
-      <rect x="7" y="16" width="4" height="1" fill="#7a4d45"/>
-      
-      <!-- Smile -->
-      <rect x="8" y="18" width="2" height="1" fill="#7a4d45"/>
-      
-      <!-- Body (blanket) -->
-      <rect x="4" y="20" width="24" height="8" fill="#4c1d95"/>
-      <rect x="4" y="20" width="10" height="8" fill="#3c1878"/>
-      <rect x="18" y="20" width="10" height="8" fill="#5d25b0"/>
-      
-      <!-- Graduation cap on chair -->
-      <rect x="22" y="14" width="8" height="2" fill="#1e1b4b"/>
-      <rect x="24" y="12" width="4" height="2" fill="#1e1b4b"/>
-    </svg>`,
-    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Pillow -->
-      <rect x="4" y="16" width="8" height="4" fill="#f1f5f9"/>
-      <rect x="5" y="16" width="6" height="1" fill="#cbd5e1"/>
-      
-      <!-- Head -->
-      <rect x="6" y="14" width="6" height="6" fill="#ffccaa"/>
-      <!-- Hair -->
-      <rect x="5" y="13" width="8" height="4" fill="#5c4033"/>
-      <rect x="4" y="15" width="1" height="3" fill="#5c4033"/>
-      <rect x="13" y="15" width="1" height="3" fill="#5c4033"/>
-      
-      <!-- Headband -->
-      <rect x="5" y="15" width="8" height="1" fill="#1e1b4b"/>
-      
-      <!-- Closed eyes -->
-      <rect x="7" y="16" width="4" height="1" fill="#7a4d45"/>
-      
-      <!-- Smile -->
-      <rect x="8" y="18" width="2" height="1" fill="#7a4d45"/>
-      
-      <!-- Body (blanket) -->
-      <rect x="4" y="20" width="24" height="8" fill="#4c1d95"/>
-      <rect x="4" y="20" width="10" height="8" fill="#3c1878"/>
-      <rect x="18" y="20" width="10" height="8" fill="#5d25b0"/>
-      
-      <!-- Alarm clock -->
-      <rect x="22" y="14" width="6" height="4" fill="#1e293b"/>
-      <rect x="24" y="15" width="2" height="2" fill="#22c55e"/>
-    </svg>`,
-  },
-};
+function createSleepStateSprite({ gender, state, config }) {
+  const hairBase = config.hairBase;
+  const hairHighlight = config.hairHighlight || hairBase;
+  const blanketMain = config.outfitPrimary;
+  const blanketShade = config.outfitSecondary;
+  const accent = config.accent || "#fbbf24";
+  const trim = config.trim || "#0f172a";
 
-const sleepSpritesPoor = {
-  "First Year": {
-    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Messy bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Tossed pillow -->
-      <rect x="18" y="14" width="8" height="4" fill="#f1f5f9" transform="rotate(15 22 16)"/>
-      
-      <!-- Head - restless -->
-      <rect x="8" y="14" width="6" height="6" fill="#ffccaa"/>
-      <!-- Hair -->
-      <rect x="8" y="14" width="6" height="2" fill="#5c4033"/>
-      <rect x="7" y="15" width="1" height="3" fill="#5c4033"/>
-      <rect x="14" y="15" width="1" height="3" fill="#5c4033"/>
-      
-      <!-- Worried eyes -->
-      <rect x="9" y="16" width="1" height="1" fill="#000"/>
-      <rect x="12" y="16" width="1" height="1" fill="#000"/>
-      
-      <!-- Frown -->
-      <rect x="10" y="18" width="3" height="1" fill="#7a4d45"/>
-      
-      <!-- Body (tangled blanket) -->
-      <rect x="4" y="20" width="20" height="8" fill="#3b82f6"/>
-      <rect x="4" y="20" width="8" height="8" fill="#2f6ccc"/>
-      <rect x="16" y="20" width="8" height="8" fill="#4d96ff"/>
-      
-      <!-- Sweat drops -->
-      <rect x="10" y="13" width="1" height="2" fill="#60a5fa"/>
-      <rect x="13" y="12" width="1" height="2" fill="#60a5fa"/>
-      
-      <!-- Phone glowing -->
-      <rect x="24" y="16" width="4" height="6" fill="#1e293b"/>
-      <rect x="25" y="17" width="2" height="4" fill="#3b82f6" opacity="0.7"/>
-    </svg>`,
-    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Messy bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Tossed pillow -->
-      <rect x="18" y="14" width="8" height="4" fill="#f1f5f9" transform="rotate(15 22 16)"/>
-      
-      <!-- Head - restless -->
-      <rect x="8" y="14" width="6" height="6" fill="#ffccaa"/>
-      <!-- Hair -->
-      <rect x="7" y="14" width="8" height="3" fill="#3f2e26"/>
-      <rect x="6" y="15" width="1" height="3" fill="#3f2e26"/>
-      <rect x="15" y="15" width="1" height="3" fill="#3f2e26"/>
-      
-      <!-- Worried eyes -->
-      <rect x="9" y="16" width="1" height="1" fill="#000"/>
-      <rect x="12" y="16" width="1" height="1" fill="#000"/>
-      
-      <!-- Frown -->
-      <rect x="10" y="18" width="3" height="1" fill="#7a4d45"/>
-      
-      <!-- Body (tangled blanket) -->
-      <rect x="4" y="20" width="20" height="8" fill="#ec4899"/>
-      <rect x="4" y="20" width="8" height="8" fill="#db2777"/>
-      <rect x="16" y="20" width="8" height="8" fill="#f472b6"/>
-      
-      <!-- Sweat drops -->
-      <rect x="10" y="13" width="1" height="2" fill="#60a5fa"/>
-      <rect x="13" y="12" width="1" height="2" fill="#60a5fa"/>
-      
-      <!-- Laptop glowing -->
-      <rect x="22" y="16" width="8" height="4" fill="#1e293b"/>
-      <rect x="23" y="17" width="6" height="2" fill="#3b82f6" opacity="0.7"/>
-    </svg>`,
-  },
-  "Second Year": {
-    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Messy bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Head - half awake -->
-      <rect x="10" y="14" width="6" height="6" fill="#ffccaa"/>
-      <!-- Hair -->
-      <rect x="10" y="14" width="6" height="2" fill="#3f2e26"/>
-      <rect x="9" y="15" width="1" height="3" fill="#3f2e26"/>
-      <rect x="16" y="15" width="1" height="3" fill="#3f2e26"/>
-      
-      <!-- Tired eyes (one open, one closed) -->
-      <rect x="11" y="16" width="1" height="1" fill="#000"/>
-      <rect x="13" y="16" width="2" height="1" fill="#7a4d45"/>
-      
-      <!-- Body (sitting up) -->
-      <rect x="8" y="20" width="16" height="8" fill="#10b981"/>
-      <rect x="8" y="20" width="6" height="8" fill="#0c8667"/>
-      <rect x="18" y="20" width="6" height="8" fill="#15d49a"/>
-      
-      <!-- Coffee cup -->
-      <rect x="24" y="16" width="3" height="4" fill="#78350f"/>
-      <rect x="25" y="15" width="1" height="1" fill="#fbbf24"/>
-      
-      <!-- Dark circles -->
-      <rect x="10" y="16" width="1" height="1" fill="#4b5563" opacity="0.5"/>
-    </svg>`,
-    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Messy bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Head - half awake -->
-      <rect x="10" y="14" width="6" height="6" fill="#ffccaa"/>
-      <!-- Hair -->
-      <rect x="9" y="13" width="8" height="4" fill="#3f2e26"/>
-      <rect x="8" y="15" width="1" height="3" fill="#3f2e26"/>
-      <rect x="17" y="15" width="1" height="3" fill="#3f2e26"/>
-      
-      <!-- Tired eyes (one open, one closed) -->
-      <rect x="11" y="16" width="1" height="1" fill="#000"/>
-      <rect x="13" y="16" width="2" height="1" fill="#7a4d45"/>
-      
-      <!-- Body (sitting up) -->
-      <rect x="8" y="20" width="16" height="8" fill="#10b981"/>
-      <rect x="8" y="20" width="6" height="8" fill="#0c8667"/>
-      <rect x="18" y="20" width="6" height="8" fill="#15d49a"/>
-      
-      <!-- Textbook -->
-      <rect x="22" y="16" width="6" height="4" fill="#7f1d1d"/>
-      <rect x="23" y="17" width="4" height="2" fill="#fef3c7"/>
-      
-      <!-- Dark circles -->
-      <rect x="10" y="16" width="1" height="1" fill="#4b5563" opacity="0.5"/>
-    </svg>`,
-  },
-  "Third Year": {
-    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Messy bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Head - exhausted -->
-      <rect x="12" y="14" width="6" height="6" fill="#eddcd2"/>
-      <!-- Hair -->
-      <rect x="12" y="14" width="6" height="2" fill="#2d221e"/>
-      <rect x="11" y="15" width="1" height="3" fill="#2d221e"/>
-      <rect x="18" y="15" width="1" height="3" fill="#2d221e"/>
-      
-      <!-- Dark circles under eyes -->
-      <rect x="13" y="17" width="4" height="1" fill="#4b5563" opacity="0.7"/>
-      
-      <!-- Open tired eyes -->
-      <rect x="13" y="16" width="1" height="1" fill="#000"/>
-      <rect x="16" y="16" width="1" height="1" fill="#000"/>
-      
-      <!-- Body (blanket half off) -->
-      <rect x="8" y="20" width="18" height="8" fill="#4b5563"/>
-      <rect x="8" y="20" width="8" height="8" fill="#354556"/>
-      <rect x="20" y="20" width="6" height="8" fill="#566374"/>
-      
-      <!-- Coffee pot -->
-      <rect x="24" y="14" width="4" height="6" fill="#78350f"/>
-      <rect x="25" y="13" width="2" height="1" fill="#fbbf24"/>
-    </svg>`,
-    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Messy bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Head - exhausted with glasses -->
-      <rect x="12" y="14" width="6" height="6" fill="#eddcd2"/>
-      <!-- Hair -->
-      <rect x="11" y="13" width="8" height="4" fill="#2d221e"/>
-      <rect x="10" y="15" width="1" height="3" fill="#2d221e"/>
-      <rect x="19" y="15" width="1" height="3" fill="#2d221e"/>
-      
-      <!-- Glasses -->
-      <rect x="12" y="16" width="2" height="1" fill="none" stroke="#4b5563" stroke-width="1"/>
-      <rect x="15" y="16" width="2" height="1" fill="none" stroke="#4b5563" stroke-width="1"/>
-      <rect x="14" y="16" width="1" height="1" fill="#4b5563"/>
-      
-      <!-- Dark circles -->
-      <rect x="12" y="17" width="1" height="1" fill="#4b5563" opacity="0.7"/>
-      <rect x="17" y="17" width="1" height="1" fill="#4b5563" opacity="0.7"/>
-      
-      <!-- Body (blanket half off) -->
-      <rect x="8" y="20" width="18" height="8" fill="#4b5563"/>
-      <rect x="8" y="20" width="8" height="8" fill="#354556"/>
-      <rect x="20" y="20" width="6" height="8" fill="#566374"/>
-      
-      <!-- Multiple books -->
-      <rect x="22" y="14" width="3" height="4" fill="#7f1d1d"/>
-      <rect x="26" y="15" width="3" height="4" fill="#1e3a8a"/>
-    </svg>`,
-  },
-  "Fourth Year": {
-    male: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Messy bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Head - stressed -->
-      <rect x="14" y="14" width="6" height="6" fill="#ffccaa"/>
-      <!-- Hair -->
-      <rect x="14" y="14" width="6" height="2" fill="#1a1839"/>
-      <rect x="13" y="15" width="1" height="3" fill="#1a1839"/>
-      <rect x="20" y="15" width="1" height="3" fill="#1a1839"/>
-      
-      <!-- Wide awake stressed eyes -->
-      <rect x="15" y="16" width="1" height="1" fill="#000"/>
-      <rect x="18" y="16" width="1" height="1" fill="#000"/>
-      
-      <!-- Open mouth -->
-      <rect x="16" y="18" width="2" height="1" fill="#7a4d45"/>
-      
-      <!-- Body (sitting up stressed) -->
-      <rect x="10" y="20" width="14" height="8" fill="#4c1d95"/>
-      <rect x="10" y="20" width="6" height="8" fill="#3c1878"/>
-      <rect x="20" y="20" width="4" height="8" fill="#5d25b0"/>
-      
-      <!-- Thesis papers everywhere -->
-      <rect x="4" y="14" width="6" height="4" fill="#f8fafc"/>
-      <rect x="24" y="12" width="4" height="6" fill="#f8fafc"/>
-      <rect x="5" y="15" width="4" height="2" fill="#cbd5e1"/>
-    </svg>`,
-    female: `<svg width="100%" height="100%" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-      <!-- Messy bed -->
-      <rect x="2" y="20" width="28" height="10" fill="#334155"/>
-      <rect x="2" y="18" width="28" height="2" fill="#475569"/>
-      
-      <!-- Head - stressed with headband -->
-      <rect x="14" y="14" width="6" height="6" fill="#ffccaa"/>
-      <!-- Hair -->
-      <rect x="13" y="13" width="8" height="4" fill="#5c4033"/>
-      <rect x="12" y="15" width="1" height="3" fill="#5c4033"/>
-      <rect x="21" y="15" width="1" height="3" fill="#5c4033"/>
-      
-      <!-- Headband -->
-      <rect x="13" y="15" width="8" height="1" fill="#1e1b4b"/>
-      
-      <!-- Wide awake stressed eyes -->
-      <rect x="15" y="16" width="1" height="1" fill="#000"/>
-      <rect x="18" y="16" width="1" height="1" fill="#000"/>
-      
-      <!-- Open mouth -->
-      <rect x="16" y="18" width="2" height="1" fill="#7a4d45"/>
-      
-      <!-- Body (sitting up stressed) -->
-      <rect x="10" y="20" width="14" height="8" fill="#4c1d95"/>
-      <rect x="10" y="20" width="6" height="8" fill="#3c1878"/>
-      <rect x="20" y="20" width="4" height="8" fill="#5d25b0"/>
-      
-      <!-- Alarm clock showing late hour -->
-      <rect x="24" y="14" width="6" height="4" fill="#1e293b"/>
-      <rect x="26" y="15" width="2" height="2" fill="#ef4444"/>
-      
-      <!-- Graduation cap thrown aside -->
-      <rect x="4" y="12" width="8" height="2" fill="#1e1b4b" transform="rotate(-15 8 13)"/>
-    </svg>`,
-  },
-};
+  const eyes =
+    state === "good"
+      ? `<rect x="36" y="36" width="10" height="2" fill="#432818" />
+         <rect x="50" y="36" width="10" height="2" fill="#432818" />`
+      : `<rect x="38" y="35" width="4" height="4" fill="#0f172a" />
+         <rect x="52" y="35" width="4" height="4" fill="#0f172a" />`;
+
+  const brow =
+    state === "poor"
+      ? `<rect x="35" y="32" width="14" height="2" fill="#3b2f2f" />
+         <rect x="49" y="30" width="14" height="2" fill="#3b2f2f" />`
+      : "";
+
+  const mouth =
+    state === "good"
+      ? `<rect x="44" y="44" width="8" height="2" fill="#c2410c" />`
+      : `<rect x="44" y="44" width="8" height="2" fill="#1f2937" />`;
+
+  const pillowShadow =
+    state === "good"
+      ? `<rect x="10" y="30" width="10" height="16" fill="#cbd5e1" opacity="0.6" />`
+      : `<rect x="10" y="30" width="12" height="16" fill="#94a3b8" opacity="0.6" />`;
+
+  const stateExtras =
+    state === "good"
+      ? `<rect x="78" y="24" width="6" height="3" fill="${accent}" opacity="0.9"/>
+         <rect x="82" y="18" width="7" height="3" fill="${accent}" opacity="0.7"/>
+         <rect x="86" y="12" width="8" height="3" fill="${accent}" opacity="0.5"/>`
+      : `<rect x="72" y="40" width="12" height="18" rx="2" fill="#0f172a"/>
+         <rect x="74" y="42" width="8" height="8" fill="#38bdf8" opacity="0.8"/>
+         <rect x="74" y="52" width="8" height="4" fill="#0f172a"/>
+         <rect x="75" y="53" width="6" height="2" fill="#38bdf8" />
+         <rect x="68" y="32" width="4" height="8" fill="#fde047" opacity="0.7"/>`;
+
+  const sweatDrops =
+    state === "poor"
+      ? `<rect x="38" y="28" width="2" height="5" fill="#38bdf8" opacity="0.8" />
+         <rect x="58" y="30" width="2" height="4" fill="#38bdf8" opacity="0.6" />`
+      : "";
+
+  const blanketHighlight =
+    state === "good"
+      ? `<rect x="30" y="52" width="48" height="10" fill="${accent}" opacity="0.25" />`
+      : `<rect x="30" y="60" width="48" height="12" fill="${accent}" opacity="0.15" />`;
+
+  return `<svg class="sleep-state-sprite" width="100%" height="100%" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+    <rect x="4" y="58" width="88" height="30" fill="#0f172a" />
+    <rect x="0" y="50" width="96" height="12" fill="#1e293b" />
+    <rect x="10" y="30" width="24" height="16" fill="#f8fafc" />
+    ${pillowShadow}
+    <rect x="28" y="46" width="52" height="42" fill="${blanketMain}" />
+    <rect x="28" y="46" width="24" height="42" fill="${blanketShade}" />
+    ${blanketHighlight}
+    <rect x="28" y="46" width="52" height="4" fill="${trim}" />
+    <rect x="34" y="26" width="28" height="22" fill="${retroSkin.base}" />
+    <rect x="34" y="26" width="10" height="22" fill="${
+      retroSkin.shade
+    }" opacity="0.8" />
+    ${
+      gender === "female"
+        ? `<rect x="32" y="24" width="32" height="16" fill="${hairBase}" />
+           <rect x="32" y="24" width="32" height="6" fill="${hairHighlight}" />`
+        : `<rect x="36" y="24" width="24" height="12" fill="${hairBase}" />
+           <rect x="36" y="24" width="24" height="4" fill="${hairHighlight}" />`
+    }
+    ${eyes}
+    ${brow}
+    ${mouth}
+    ${stateExtras}
+    ${sweatDrops}
+  </svg>`;
+}
+
+const sleepSpritesGood = {};
+const sleepSpritesPoor = {};
+
+["male", "female"].forEach((gender) => {
+  Object.entries(spriteConfigs[gender]).forEach(([level, config]) => {
+    if (!sleepSpritesGood[level]) sleepSpritesGood[level] = {};
+    if (!sleepSpritesPoor[level]) sleepSpritesPoor[level] = {};
+    sleepSpritesGood[level][gender] = createSleepStateSprite({
+      gender,
+      state: "good",
+      config,
+    });
+    sleepSpritesPoor[level][gender] = createSleepStateSprite({
+      gender,
+      state: "poor",
+      config,
+    });
+  });
+});
 
 // ===== DOM Elements =====
 const elements = {
@@ -1120,6 +702,20 @@ function showSleepSprite(isGoodSleep, level, sex) {
 let rocketLayerEl = null;
 let rocketIntervalId = null;
 
+function getRocketSVG() {
+  return `<svg width="100%" height="100%" viewBox="0 0 32 48" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+    <polygon points="16,0 24,12 8,12" fill="#f97316"/>
+    <path d="M8 12 L24 12 L28 28 L28 40 C28 44 23 48 16 48 C9 48 4 44 4 40 L4 28 Z" fill="#f8fafc" stroke="#d1d5db" stroke-width="1"/>
+    <polygon points="4,28 0,36 4,40" fill="#ef4444"/>
+    <polygon points="28,28 32,36 28,40" fill="#ef4444"/>
+    <circle cx="16" cy="18" r="4" fill="#bae6fd" stroke="#38bdf8" stroke-width="1"/>
+    <circle cx="16" cy="28" r="4" fill="#bae6fd" stroke="#38bdf8" stroke-width="1"/>
+    <rect x="12" y="40" width="8" height="6" fill="#f97316"/>
+    <polygon points="12,46 20,46 16,48" fill="#facc15"/>
+    <rect x="12" y="44" width="8" height="2" fill="#fb923c"/>
+  </svg>`;
+}
+
 function ensureRocketLayer() {
   if (rocketLayerEl && document.body.contains(rocketLayerEl)) {
     return rocketLayerEl;
@@ -1147,6 +743,7 @@ function spawnRocket() {
   rocket.style.setProperty("--rocket-speed", `${6 + Math.random() * 5}s`);
   rocket.style.setProperty("--rocket-drift", `${Math.random() * 40 - 20}vw`);
   rocket.style.setProperty("--rocket-tilt", `${-18 + Math.random() * 12}deg`);
+  rocket.innerHTML = getRocketSVG();
 
   layer.appendChild(rocket);
   rocket.addEventListener("animationend", () => rocket.remove());
