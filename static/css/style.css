@@ -2,7 +2,8 @@
 body {
   background-color: #050510;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background-image: radial-gradient(
       white,
       rgba(255, 255, 255, 0.3) 2px,
