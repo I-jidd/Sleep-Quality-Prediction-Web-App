@@ -9,6 +9,9 @@ try:
     with open('models/model_columns_final.pkl', 'rb') as f:
         model_columns_final = pickle.load(f)
     print("Final columns template ('model_columns_final.pkl') loaded successfully.")
+    
+    with open('models/preprocessor.pkl', 'rb') as f:
+        preprocessor = pickle.load(f)
 except FileNotFoundError as e:
     print(f"CRITICAL ERROR: Could not load 'model_columns_final.pkl': {e}")
     model_columns_final = None
@@ -28,6 +31,17 @@ ORDINAL_MAPPING = {
     'stress_level': {'Low stress': 0, 'Moderate stress':1, 'High stress':2}
 }
 
+numeric_features = [
+    "Caffeine_Intake_Frequency",
+    "screen_time_before_sleep",
+    "smoking_Frequency",
+    "physical_activity_frequency",
+    "alcohol_consumption_frequency",
+    "daytime_nap_duration",
+    "latenight_study_hours",
+    "stress_level"
+]
+
 # --- 4. PREPROCESSING FUNCTION ---
 def preprocess_input(data):
     """
@@ -42,6 +56,17 @@ def preprocess_input(data):
         'alcohol_consumption_frequency', 'daytime_nap_duration',
         'latenight_study_hours', 'stress_level'
     ]
+    
+    numeric_features = ['academic_level',
+                    'Caffeine_Intake_Frequency',
+                    'screen_time_before_sleep',
+                    'smoking_Frequency',
+                    'physical_activity_frequency',
+                    'alcohol_consumption_frequency',
+                    'daytime_nap_duration',
+                    'latenight_study_hours',
+                    'stress_level',]
+
     df = pd.DataFrame([data], columns=original_cols_order)
     
     for col, map_dict in ORDINAL_MAPPING.items():
@@ -55,6 +80,11 @@ def preprocess_input(data):
     
     df_final = df.reindex(columns=model_columns_final, fill_value=0)
     
+    if preprocessor and numeric_features:
+        try:
+            df_final[numeric_features] = preprocessor.transform(df_final[numeric_features])
+        except Exception as e:
+            print(f"Error during scaling numeric features: {e}")
     return df_final
 
 
